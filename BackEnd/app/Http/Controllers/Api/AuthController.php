@@ -37,7 +37,7 @@ class AuthController extends Controller
             return $user;
         });
 
-        return $this->tokenResponse($user, 'Akun berhasil dibuat.', 201);
+        return $this->tokenResponse($user, 'Account created successfully.', 201);
     }
 
     /**
@@ -55,17 +55,17 @@ class AuthController extends Controller
             // One message for both cases so the form cannot be used to probe
             // which usernames exist.
             throw ValidationException::withMessages([
-                'identifier' => 'Username/email atau password salah.',
+                'identifier' => 'Invalid username/email or password.',
             ]);
         }
 
         if (! $user->isActive()) {
             throw ValidationException::withMessages([
-                'identifier' => 'Akun ini sedang tidak aktif. Hubungi dukungan UMKMify.',
+                'identifier' => 'This account is currently inactive. Please contact UMKMify support.',
             ]);
         }
 
-        return $this->tokenResponse($user, 'Berhasil masuk.');
+        return $this->tokenResponse($user, 'Signed in successfully.');
     }
 
     /**
@@ -75,7 +75,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Berhasil keluar.']);
+        return response()->json(['message' => 'Signed out successfully.']);
     }
 
     /**

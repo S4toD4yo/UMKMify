@@ -40,12 +40,13 @@ setupPasswordToggle(
     "registerConfirmPasswordToggle",
     "registerConfirmPasswordIcon"
 );
+
 /* ----------------------------------------------------------------------- */
 /* Authentication                                                          */
 /* ----------------------------------------------------------------------- */
 
 // The pages are served by Apache on http://localhost while the API runs on
-// artisan serve, so requests are cross-origin — the origin is whitelisted in
+// artisan serve, so requests are cross-origin. The origin is whitelisted in
 // BackEnd/config/cors.php via FRONTEND_URL. Swap this for the Railway URL
 // when deploying.
 const API_BASE = "http://127.0.0.1:8000/api";
@@ -113,7 +114,7 @@ async function postJson(path, payload) {
         return {
             ok: false,
             errors: {
-                _form: "Tidak bisa terhubung ke server. Pastikan `php artisan serve` sedang jalan.",
+                _form: "Don't forget to run the Laravel development server.",
             },
         };
     }
@@ -139,11 +140,18 @@ async function postJson(path, payload) {
     if (response.status === 429) {
         return {
             ok: false,
-            errors: { _form: "Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi." },
+            errors: {
+                _form: "Too many attempts. Wait a moment and try again.",
+            },
         };
     }
 
-    return { ok: false, errors: { _form: data.message || "Terjadi kesalahan." } };
+    return {
+        ok: false,
+        errors: {
+            _form: data.message || "An error occurred.",
+        },
+    };
 }
 
 /**
@@ -214,7 +222,7 @@ function setupRegisterForm() {
 
         if (password !== confirmation) {
             document.getElementById("registerConfirmPasswordError").textContent =
-                "Konfirmasi password tidak cocok.";
+                "Password confirmation does not match.";
             return;
         }
 
