@@ -1,4 +1,4 @@
-/* Fonts */
+ /* Fonts */
 /* Regular */
 @font-face {
     font-family: "Lexend";
@@ -31,13 +31,19 @@
     font-style: normal;
 }
 
-body{
+body {
     background-color: #F8F8FF;
+    margin: 0;
+}
+
+.blueBody {
+    background-color: #EFF7FE;
     margin: 0;
 }
 
 /* Navbar */
 .navbar {
+    background-color: #F8F8FF;
     padding: 44px 44px 24px 44px;
     display: flex;
     align-items: center;
@@ -47,6 +53,8 @@ body{
     top: 0;
     left: 0;
     right: 0;
+
+    z-index: 1000;
 
     box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.08);
 }
@@ -72,7 +80,6 @@ body{
 }
 
 /* Navigation Buttons */
-
 .navbarNavigation {
     display: flex;
     align-items: center;
@@ -92,6 +99,13 @@ body{
     font-family: "Lexend", sans-serif;
     font-weight: 500;
     text-decoration: none;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.navButton:hover {
+    background-color: #BAE8FE;
+    box-shadow: 0 0 0 2px #00B9FB;
 }
 
 .navButton.active {
@@ -180,5 +194,961 @@ body{
 }
 
 .signInButton:active {
+    opacity: 0.5;
+}
+
+
+/* Homepage Content */
+.homePage {
+    padding-left: 64px;
+    padding-right: 64px;
+    margin-top: 170px;
+}
+
+/* Banner */
+.homeBanner {
+    width: 100%;
+    overflow: hidden;
+}
+
+.homeBannerImage {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: fill;
+}
+
+/* Popular Category */
+.popularCategory {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.popularCategoryIcon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.popularCategoryTitle {
+    font-size: 32px;
+    letter-spacing: 1.5%;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    color: #343434;
+}
+
+/* Popular Category Cards */
+.popularCategoryCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 110.25px);
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.popularCategoryCard {
+    width: 110.25px;
+    height: 138px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+
+    color: #343434;
+    text-decoration: none;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.popularCategoryCard:hover {
+    background-color: #C7C7CC;
+}
+
+.popularCategoryCardIcon {
+    width: 78px;
+    height: 78px;
+    display: block;
+    flex-shrink: 0;
+}
+
+.popularCategoryCardTitle {
+    margin-top: 8px;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    line-height: 1.2;
+    text-align: center;
+}
+
+ /* Latest Product */
+.latestProduct {
+    margin-top: 44px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.latestProductIcon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.latestProductTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+/* Latest Product Empty State */
+.latestProductEmpty {
+    margin: 44px 0 0;
+
+    color: #343434;
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+/* Latest Product Empty State */
+.latestProductEmpty {
+    margin: 44px 0 0;
+
+    color: #343434;
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+/* Latest Product Button */
+.latestProductButton {
+    margin: 24px auto 0;
+    padding: 10px 16px;
+
+    display: block;
+    width: fit-content;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+
+    border-radius: 4px;
+
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    text-decoration: none;
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.latestProductButton:hover {
+    background-color: #7CD8FD;
+}
+
+.latestProductButton:active {
+    opacity: 0.5;
+}
+
+/* Why Choose */
+.whyChoose {
+    margin-top: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.whyChooseTitle,
+.whyChooseQuestion {
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+.whyChooseIcon {
+    width: auto;
+    height: 32px;
+    margin-left: 16px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.whyChooseCards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    flex-wrap: wrap;
+}
+
+.whyChooseCardIcon {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+
+    margin-right: 8px;
+}
+
+.whyChooseCardContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.whyChooseCardTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.whyChooseCardDescription {
+    margin: 0;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.whyChooseCard {
+    width: 310px;
+    height: 80px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    padding: 16px;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+/* Footer */
+.footer {
+    margin-top: 96px;
+    background-color: #00B9FB;
+    padding: 24px 44px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.footerContent {
+    display: flex;
+    align-items: flex-start;
+}
+/* Footer Left */
+.footerLeft {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footerLogo {
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+.footerDescription {
+    margin: 8px 0 0;
+
+    width: 256px;
+
+    color: #F8F8FF;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+}
+
+/* Footer Menu */
+.footerMenu {
+    margin-left: 128px;
+}
+
+.footerMenuTitle {
+    margin: 0;
+
+    color: #F8F8FF;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.footerMenuLinks {
+    margin-top: 16px;
+
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(3, auto);
+    column-gap: 32px;
+    row-gap: 8px;
+}
+
+.footerMenuLinks a {
+    color: #F8F8FF;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Footer Help */
+/* Footer Help */
+.footerHelp {
+    margin-left: 96px;
+}
+
+.footerHelpTitle {
+    margin: 0;
+
+    color: #F8F8FF;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.footerHelpLinks {
+    margin-top: 16px;
+
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(3, auto);
+    column-gap: 32px;
+    row-gap: 8px;
+}
+
+.footerHelpLinks a {
+    color: #F8F8FF;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Footer Information */
+.footerInformation {
+    margin-left: 96px;
+}
+
+.footerInformationTitle {
+    margin: 0;
+
+    color: #F8F8FF;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.footerInformationLinks {
+    margin-top: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footerInformationLinks a {
+    color: #F8F8FF;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Copyright */
+.footerCopyright {
+    margin-top: 44px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.footerCopyrightText {
+    margin: 0;
+
+    color: #F8F8FF;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+
+
+
+/* About Us Content */
+.aboutUsPage {
+    padding-left: 64px;
+    padding-right: 64px;
+    margin-top: 170px;
+}
+
+.aboutUsText {
+    width: 576px;
+}
+
+.aboutUsTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+.aboutUsSubtitle {
+    margin: 8px 0 0;
+
+    width: 576px;
+
+    color: #343434;
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+.aboutUsDescription {
+    margin: 8px 0 0;
+
+    width: 384px;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+    text-align: justify;
+}
+
+/* About Us Image */
+.aboutUsImageContainer {
+    position: absolute;
+    top: 110px;
+    right: 0;
+
+    flex-shrink: 0;
+}
+
+.aboutUsImage {
+    width: auto;
+    height: auto;
+    display: block;
+}
+
+/* About Us Section */
+.aboutUsSection {
+    margin-top: 32px;
+    width: 100%;
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+
+    padding: 44px 64px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+.aboutUsSectionTitle {
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+/* Mission & Vision Cards */
+.missionVisionHeader {
+    display: flex;
+    align-items: center;
+}
+
+.missionVisionCards {
+    margin-top: 32px;
+
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+}
+
+.missionVisionCard {
+    width: 456px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    padding: 16px;
+
+    background-color: #F8F8FF;
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+.missionVisionCardIcon {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+}
+
+.missionVisionCardContent {
+    margin-left: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.missionVisionCardTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+.missionVisionCardDescription {
+    margin: 8px 0 0;
+
+    width: 320px;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+    text-align: justify;
+}
+
+/* Mission & Vision List */
+.missionVisionList {
+    margin-top: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.missionVisionListItem {
+    display: flex;
+    align-items: center;
+}
+
+.missionVisionListIcon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.missionVisionListText {
+    margin: 0 0 0 8px;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* About Us Additional Content */
+.aboutUsAdditional {
+    margin-top: 44px;
+    padding-left: 64px;
+    padding-right: 64px;
+}
+
+.aboutUsAdditionalTitle {
+    margin: 0;
+
+    width: 704px;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+.aboutUsAdditionalDescription {
+    margin-top: 8px;
+
+    width: 512px;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+}
+
+.aboutUsAdditionalImageContainer {
+    position: absolute;
+    right: 0;
+
+    margin-top: -180px;
+}
+
+.aboutUsAdditionalImage {
+    width: auto;
+    height: auto;
+    display: block;
+}
+
+
+
+/* Contact Us */
+
+/* Contact Us Content */
+.contactUsPage {
+    padding-left: 64px;
+    padding-right: 64px;
+    margin-top: 170px;
+}
+
+.contactUsTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+.contactUsDescription {
+    margin: 8px 0 0;
+
+    width: 512px;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+}
+
+/* Contact Us Container */
+.contactUsContainers {
+    margin-top: 44px;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.contactUsContainer {
+    width: fit-content;
+    box-sizing: border-box;
+
+    padding: 24px 16px 236px;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+/* Ways To Connect Us */
+.contactUsContainerTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+/* Contact Us Ways */
+.contactUsWays {
+    margin-top: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.contactUsWay {
+    display: flex;
+    align-items: center;
+}
+
+.contactUsWayIcon {
+    width: 64px;
+    height: 64px;
+    display: block;
+    flex-shrink: 0;
+}
+
+.contactUsWayContent {
+    margin-left: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.contactUsWayTitle {
+    margin: 0;
+
+    color: #343434;
+
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+.contactUsWayDescription {
+    margin: 8px 0 0;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+}
+
+/* Blue */
+.contactUsWayBlue,.contactUsWayBlue .contactUsWayDescription {
+    color: #00B9FB;
+    text-decoration: none;
+}
+
+/* Orange */
+.contactUsWayOrange, .contactUsWayOrange .contactUsWayDescription {
+    color: #F7931E;
+    text-decoration: none;
+}
+
+/* Send Message */
+.sendMessageContainer {
+    width: fit-content;
+    box-sizing: border-box;
+
+    padding: 24px 16px;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+.sendMessageTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+.contactFormField {
+    width: 279.5px;
+    flex-shrink: 0;
+}
+
+.contactFormLabel {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.contactFormInput {
+    margin-top: 8px;
+
+    width: 279.5px;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    outline: none;
+    background-color: transparent;
+}
+
+.contactFormInput::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+.contactFormRow {
+    margin-top: 24px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+/* Subject */
+.contactFormSubject {
+    margin-top: 24px;
+    width: 575px;
+}
+
+.contactFormSelect {
+    margin-top: 8px;
+
+    width: 575px;
+    box-sizing: border-box;
+
+    padding: 12px;
+    padding-right: 40px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: #F8F8FF;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    outline: none;
+    cursor: pointer;
+}
+
+/* Message */
+.contactFormMessage {
+    margin-top: 24px;
+    width: 575px;
+}
+
+.contactFormTextarea {
+    margin-top: 8px;
+
+    width: 575px;
+    height: 132px;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 8px;
+
+    background-color: #F8F8FF;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+
+    outline: none;
+    resize: none;
+}
+
+.contactFormTextarea::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+.contactFormButton {
+    margin-top: 32px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    display: block;
+    width: 575px;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+
+    border-radius: 4px;
+
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+    text-decoration: none;
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.contactFormButton:hover {
+    background-color: #7CD8FD;
+}
+
+.contactFormButton:active {
     opacity: 0.5;
 }
