@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>UMKMify | Login</title>
+        <link rel="stylesheet" href="../../assets/styles.css">
+        <script src="../../App.js" defer></script>
+    </head>
+    <body class="loginAuthBody">
+
+        <!-- Decoration Stuff -->
+        <div class="Decoration">
+            <img
+                src="../../assets/images/Something.png"
+                alt=""
+                class="Decoration"
+            >
+        </div>
+
+        <!-- Logo and Text -->
+        <div class="loginLogo">
+
+            <img
+                src="../../assets/images/Logo - Orange.svg"
+                alt="UMKMify"
+                class="theLogo"
+            >
+
+            <p class="logoDescription">
+                Breaking Digital Boundaries, Elevating Local Business.
+            </p>
+
+        </div>
+
+        <!-- Login Container -->
+        <div class="loginContainer">
+            <h1 class="loginTitle">
+                Welcome Back!
+            </h1>
+
+            <p class="loginSubtitle">
+                Login to continue your journey with UMKMify
+            </p>
+
+            <!-- Username or Email Address -->
+            <div class="loginFormField">
+
+                <h3 class="loginFormLabel">
+                    Username or email address
+                </h3>
+
+                <input
+                    type="text"
+                    class="loginFormInput"
+                    placeholder="Enter your username or email address"
+                    tabindex="1"
+                >
+            </div>
+
+
+            <!-- Password -->
+            <div class="loginFormField">
+
+                <div class="loginPasswordLabel">
+                    <h3 class="loginFormLabel">
+                        Password
+                    </h3>
+
+                    <a href="../Error/comingSoon.html" class="forgotPassword">
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <div class="loginPasswordWrapper">
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        class="loginFormInput"
+                        placeholder="Enter your password"
+                        tabindex="2"
+                    >
+
+                    <button
+                        type="button"
+                        id="loginPasswordToggle"
+                        class="loginPasswordToggle"
+                        aria-label="Show password"
+                    >
+                        <img
+                            id="loginPasswordIcon"
+                            src="../../assets/icons/Eye.svg"
+                            alt=""
+                        >
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Sign In -->
+            <a
+                href="./homePage.html"
+                type="submit"
+                class="loginSignInButton"
+                tabindex="3"
+            >
+                Sign In
+            </a>
+
+            <p class="loginSignUpText">
+                Don't have an account?
+                <a href="./register.html" class="loginSignUpLink">
+                    Sign Up
+                </a>
+                now
+            </p>
+        </div>
+
+        <!-- Auth Footer -->
+        <footer class="authFooter">
+            <p class="authFooterText">
+                &copy; 2026 UMKMify, All rights reserved.
+            </p>
+        </footer>
+    </body>
+</html>

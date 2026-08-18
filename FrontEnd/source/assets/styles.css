@@ -1154,3 +1154,513 @@ body {
 .contactFormButton:active {
     opacity: 0.5;
 }
+
+
+
+/* Authentication Pages */
+.loginAuthBody {
+    margin: 0;
+    min-height: 100vh;
+
+    background: linear-gradient(
+        135deg,
+        #00B9FB 0%,
+        #0893FB 100%
+    );
+
+    padding: 64px;
+    padding-bottom: 0px;
+    box-sizing: border-box;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr auto;
+    column-gap: 64px;
+    row-gap: 44px;
+}
+
+/* Login Container */
+.loginContainer {
+    width: fit-content;
+    box-sizing: border-box;
+
+    padding: 32px 32px 44px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+}
+
+.loginTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+.loginSubtitle {
+    margin: 8px 0 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+.loginFormField {
+    margin-top: 24px;
+
+    width: 100%;
+}
+
+.loginFormLabel {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.loginFormInput {
+    margin-top: 8px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: transparent;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    outline: none;
+}
+
+.loginFormInput::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+.loginPasswordWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.loginPasswordWrapper .loginFormInput {
+    padding-right: 40px;
+}
+
+.loginPasswordToggle {
+    position: absolute;
+    top: 60%;
+    right: 12px;
+
+    width: 16px;
+    height: 16px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    transform: translateY(-50%);
+}
+
+.loginPasswordToggle img {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.loginPasswordLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.forgotPassword {
+    color: #00B9FB;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    text-decoration: none;
+}
+
+.forgotPassword:hover {
+    text-decoration: underline;
+}
+
+.loginSignInButton {
+    margin-top: 32px;
+    padding: 10px 16px;
+
+    width: 335px;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.loginSignInButton:hover {
+    background-color: #7CD8FD;
+}
+
+.loginSignInButton:active {
+    opacity: 0.5;
+}
+
+.loginSignUpText {
+    margin: 32px 0 0;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+.loginSignUpLink {
+    color: #00B9FB;
+    text-decoration: none;
+}
+
+.loginSignUpLink:hover {
+    text-decoration: underline;
+}
+
+/* Logo and Description */
+.loginLogo {
+    grid-column: 1;
+    grid-row: 1;
+
+    align-self: center;
+    justify-self: start;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.loginContainer {
+    grid-column: 2;
+    grid-row: 1;
+
+    align-self: center;
+    justify-self: end;
+
+    width: fit-content;
+    box-sizing: border-box;
+
+    padding: 32px 32px 44px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+}
+
+.theLogo {
+    height: 44px;
+    width: auto;
+    display: block;
+}
+
+.logoDescription {
+    margin: 8px 0 0;
+
+    color: #F8F8FF;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+}
+
+/* Decoration */
+.Decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 23.70vh;
+    height: 23.70vh;
+}
+
+
+/* Auth Footer */
+.authFooter {
+    grid-column: 1 / -1;
+    grid-row: 2;
+
+    justify-self: center;
+}
+
+.authFooterText {
+    color: #F8F8FF;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+/* Register Auth */
+.registerAuthBody {
+    margin: 0;
+    min-height: 100vh;
+
+    background: linear-gradient(
+        135deg,
+        #00B9FB 0%,
+        #0893FB 100%
+    );
+
+    padding: 64px;
+    padding-bottom: 24px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.registerBranding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+}
+
+.registerLogo {
+    height: 44px;
+    width: auto;
+    display: block;
+}
+
+.registerBrandingTitle {
+    margin: 8px;
+    color: #F8F8FF;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+    text-align: center;
+}
+
+/* Register Container */
+.registerContainer {
+    margin-top: 32px;
+    width: fit-content;
+    box-sizing: border-box;
+
+    padding: 32px 32px 44px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+}
+
+.registerTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+.registerSubtitle {
+    margin: 8px;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+.registerFormGrid {
+    margin-top: 24px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 256px);
+    gap: 24px;
+}
+
+.registerFormField {
+    width: 256px;
+}
+
+.registerFormLabel {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.registerFormInput {
+    margin-top: 8px;
+
+    width: 256px;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: transparent;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    outline: none;
+}
+
+.registerFormInput::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+.registerPasswordWrapper {
+    position: relative;
+    width: 256px;
+}
+
+.registerPasswordWrapper .registerFormInput {
+    padding-right: 40px;
+}
+
+.registerPasswordToggle {
+    position: absolute;
+    top: 60%;
+    right: 12px;
+
+    width: 16px;
+    height: 16px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    transform: translateY(-50%);
+}
+
+.registerPasswordToggle img {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.registerSignUpButton {
+    margin-top: 32px;
+    padding: 10px 16px;
+
+    width: 504px;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+
+    border: none;
+    border-radius: 4px;
+
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.registerSignUpButton:hover {
+    background-color: #7CD8FD;
+}
+
+.registerSignUpButton:active {
+    opacity: 0.5;
+}
+
+.registerSignInText {
+    margin: 32px 0 0;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    text-align: center;
+}
+
+.registerSignInLink {
+    color: #00B9FB;
+    text-decoration: none;
+}
+
+.registerSignInLink:hover {
+    text-decoration: underline;
+}

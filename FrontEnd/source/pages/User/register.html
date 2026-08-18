@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMKMify | Register</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../App.js" defer></script>
+</head>
+    <body class="registerAuthBody">
+        <div class="registerBranding">
+
+            <img
+                src="../../assets/images/Logo - Orange.svg"
+                alt="UMKMify"
+                class="registerLogo"
+            >
+
+            <h3 class="registerBrandingTitle">
+                Breaking Digital Boundaries, Elevating Local Business.
+            </h3>
+
+        </div>
+
+        <!-- Register Container -->
+        <div class="registerContainer">
+            <h1 class="registerTitle">
+                Create Your Account
+            </h1>
+
+            <h3 class="registerSubtitle">
+                Let’s get started with UMKMify
+            </h3>
+
+            <div class="registerFormGrid">
+
+                <!-- Username -->
+                <div class="registerFormField">
+                    <h3 class="registerFormLabel">
+                        Username
+                    </h3>
+
+                    <input
+                        type="text"
+                        class="registerFormInput"
+                        placeholder="Create your username"
+                        tabindex="1"
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="registerFormField">
+                    <h3 class="registerFormLabel">
+                        Password
+                    </h3>
+
+                    <div class="registerPasswordWrapper">
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            class="registerFormInput"
+                            placeholder="Enter your password"
+                            tabindex="3"
+                        >
+
+                        <button
+                            type="button"
+                            id="registerPasswordToggle"
+                            class="registerPasswordToggle"
+                            aria-label="Show password"
+                        >
+                            <img
+                                id="registerPasswordIcon"
+                                src="../../assets/icons/Eye.svg"
+                                alt=""
+                            >
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="registerFormField">
+                    <h3 class="registerFormLabel">
+                        Email
+                    </h3>
+
+                    <input
+                        type="email"
+                        class="registerFormInput"
+                        placeholder="Enter your email address"
+                        tabindex="2"
+                    >
+                </div>
+
+                <!-- Re-enter Password -->
+                <div class="registerFormField">
+                    <h3 class="registerFormLabel">
+                        Re-enter Password
+                    </h3>
+
+                    <div class="registerPasswordWrapper">
+                        <input
+                            type="password"
+                            id="registerConfirmPassword"
+                            class="registerFormInput"
+                            placeholder="Re-enter your password"
+                            tabindex="4"
+                        >
+
+                        <button
+                            type="button"
+                            id="registerConfirmPasswordToggle"
+                            class="registerPasswordToggle"
+                            aria-label="Show password"
+                        >
+                            <img
+                                id="registerConfirmPasswordIcon"
+                                src="../../assets/icons/Eye.svg"
+                                alt=""
+                            >
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <a  href="./homePage.html"
+                    type="submit"
+                    class="registerSignUpButton"
+                    tabindex="5"
+                >
+                    Sign Up
+            </a>
+
+            <p class="registerSignInText">
+                Already have an account?
+                <a
+                    href="./login.html"
+                    class="registerSignInLink"
+                >
+                    Sign In
+                </a>
+                now
+            </p>
+        </div>
+
+        <!-- Auth Footer -->
+        <footer class="authFooter" style="margin-top: 64px;">
+            <p class="authFooterText">
+                &copy; 2026 UMKMify, All rights reserved.
+            </p>
+        </footer>
+    </body>
+</html>
