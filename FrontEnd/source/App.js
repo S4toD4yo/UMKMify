@@ -252,5 +252,133 @@ function setupRegisterForm() {
     });
 }
 
+/* ----------------------------------------------------------------------- */
+/* Navbar Authentication                                                   */
+/* ----------------------------------------------------------------------- */
+
+async function setupNavbarAuthentication() {
+    const navbarAuth = document.getElementById("navbarAuth");
+
+    if (!navbarAuth) {
+        return;
+    }
+
+    const token = tokenStore.get();
+
+    if (!token) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/auth/me`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            tokenStore.clear();
+            return;
+        }
+
+        const data = await response.json();
+        const user = data.user;
+
+        if (!user) {
+            return;
+        }
+
+        const username = user.username || "User";
+        const initial = username.charAt(0).toUpperCase();
+
+        navbarAuth.innerHTML = `
+            <div class="profileMenu">
+                <a
+                    href="profile.html"
+                    class="profileButton"
+                    aria-label="Open profile"
+                    title="${username}"
+                >
+                    ${initial}
+                </a>
+
+                <div class="profileDropdown">
+                    <a
+                        href="purchases.html"
+                        class="profileDropdownItem"
+                    >
+                        Purchases
+                    </a>
+
+                    <a
+                        href="cart.html"
+                        class="profileDropdownItem"
+                    >
+                        Cart
+                    </a>
+
+                    <a
+                        href="../Seller/dashboard.html"
+                        class="profileDropdownItem"
+                    >
+                        Seller Centre
+                    </a>
+
+                    <button
+                        type="button"
+                        class="profileDropdownItem signOut"
+                        id="signOutButton"
+                    >
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        `;
+
+        setupSignOut();
+    } catch (error) {
+        console.error("Failed to load authenticated user:", error);
+    }
+}
+
+async function setupSignOut() {
+    const signOutButton = document.getElementById("signOutButton");
+
+    if (!signOutButton) {
+        return;
+    }
+
+    signOutButton.addEventListener("click", async () => {
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        signOutButton.disabled = true;
+        signOutButton.textContent = "Signing Out...";
+
+        try {
+            await fetch(`${API_BASE}/auth/logout`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error("Failed to sign out:", error);
+        } finally {
+            tokenStore.clear();
+            window.location.href = "homePage.html";
+        }
+    });
+}
+
 setupLoginForm();
 setupRegisterForm();
+setupNavbarAuthentication();
+
