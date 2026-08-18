@@ -186,6 +186,8 @@ body {
     font-weight: 500;
     cursor: pointer;
 
+    text-decoration: none;
+
     transition: background-color 0.15s ease, opacity 0.15s ease;
 }
 
