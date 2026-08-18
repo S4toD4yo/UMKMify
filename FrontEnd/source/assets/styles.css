@@ -1319,7 +1319,7 @@ body {
     margin-top: 32px;
     padding: 10px 16px;
 
-    width: 335px;
+    width: 100%;
 
     background-color: #00B9FB;
     color: #F8F8FF;
@@ -1617,7 +1617,7 @@ body {
     margin-top: 32px;
     padding: 10px 16px;
 
-    width: 504px;
+    width: 100%;
 
     background-color: #00B9FB;
     color: #F8F8FF;

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UMKMify | Register</title>
     <link rel="stylesheet" href="../../assets/styles.css">
+    <link rel="stylesheet" href="../../assets/authFeedback.css">
     <script src="../../App.js" defer></script>
 </head>
     <body class="registerAuthBody">
@@ -32,105 +33,126 @@
                 Let’s get started with UMKMify
             </h3>
 
-            <div class="registerFormGrid">
+            <form id="registerForm" novalidate>
 
-                <!-- Username -->
-                <div class="registerFormField">
-                    <h3 class="registerFormLabel">
-                        Username
-                    </h3>
+                <div class="registerFormGrid">
 
-                    <input
-                        type="text"
-                        class="registerFormInput"
-                        placeholder="Create your username"
-                        tabindex="1"
-                    >
-                </div>
+                    <!-- Username -->
+                    <div class="registerFormField">
+                        <h3 class="registerFormLabel">
+                            Username
+                        </h3>
 
-                <!-- Password -->
-                <div class="registerFormField">
-                    <h3 class="registerFormLabel">
-                        Password
-                    </h3>
-
-                    <div class="registerPasswordWrapper">
                         <input
-                            type="password"
-                            id="registerPassword"
+                            type="text"
+                            id="registerUsername"
                             class="registerFormInput"
-                            placeholder="Enter your password"
-                            tabindex="3"
+                            placeholder="Create your username"
+                            tabindex="1"
+                            required
                         >
+                        <p class="authFieldError" id="registerUsernameError"></p>
 
-                        <button
-                            type="button"
-                            id="registerPasswordToggle"
-                            class="registerPasswordToggle"
-                            aria-label="Show password"
-                        >
-                            <img
-                                id="registerPasswordIcon"
-                                src="../../assets/icons/Eye.svg"
-                                alt=""
-                            >
-                        </button>
                     </div>
-                </div>
 
-                <!-- Email -->
-                <div class="registerFormField">
-                    <h3 class="registerFormLabel">
-                        Email
-                    </h3>
+                    <!-- Password -->
+                    <div class="registerFormField">
+                        <h3 class="registerFormLabel">
+                            Password
+                        </h3>
 
-                    <input
-                        type="email"
-                        class="registerFormInput"
-                        placeholder="Enter your email address"
-                        tabindex="2"
-                    >
-                </div>
+                        <div class="registerPasswordWrapper">
+                            <input
+                                type="password"
+                                id="registerPassword"
+                                class="registerFormInput"
+                                placeholder="Enter your password"
+                                tabindex="3"
+                                required
+                            >
 
-                <!-- Re-enter Password -->
-                <div class="registerFormField">
-                    <h3 class="registerFormLabel">
-                        Re-enter Password
-                    </h3>
+                            <button
+                                type="button"
+                                id="registerPasswordToggle"
+                                class="registerPasswordToggle"
+                                aria-label="Show password"
+                            >
+                                <img
+                                    id="registerPasswordIcon"
+                                    src="../../assets/icons/Eye.svg"
+                                    alt=""
+                                >
+                            </button>
+                        </div>
 
-                    <div class="registerPasswordWrapper">
+                        <p class="authFieldError" id="registerPasswordError"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="registerFormField">
+                        <h3 class="registerFormLabel">
+                            Email
+                        </h3>
+
                         <input
-                            type="password"
-                            id="registerConfirmPassword"
+                            type="email"
+                            id="registerEmail"
                             class="registerFormInput"
-                            placeholder="Re-enter your password"
-                            tabindex="4"
+                            placeholder="Enter your email address"
+                            tabindex="2"
+                            required
                         >
+                        <p class="authFieldError" id="registerEmailError"></p>
 
-                        <button
-                            type="button"
-                            id="registerConfirmPasswordToggle"
-                            class="registerPasswordToggle"
-                            aria-label="Show password"
-                        >
-                            <img
-                                id="registerConfirmPasswordIcon"
-                                src="../../assets/icons/Eye.svg"
-                                alt=""
-                            >
-                        </button>
                     </div>
-                </div>
-            </div>
 
-            <a  href="./homePage.html"
+                    <!-- Re-enter Password -->
+                    <div class="registerFormField">
+                        <h3 class="registerFormLabel">
+                            Re-enter Password
+                        </h3>
+
+                        <div class="registerPasswordWrapper">
+                            <input
+                                type="password"
+                                id="registerConfirmPassword"
+                                class="registerFormInput"
+                                placeholder="Re-enter your password"
+                                tabindex="4"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                id="registerConfirmPasswordToggle"
+                                class="registerPasswordToggle"
+                                aria-label="Show password"
+                            >
+                                <img
+                                    id="registerConfirmPasswordIcon"
+                                    src="../../assets/icons/Eye.svg"
+                                    alt=""
+                                >
+                            </button>
+                        </div>
+
+                        <p class="authFieldError" id="registerConfirmPasswordError"></p>
+                    </div>
+
+                </div>
+
+                <p class="authFormError" id="registerFormError"></p>
+
+                <button
                     type="submit"
+                    id="registerSubmit"
                     class="registerSignUpButton"
                     tabindex="5"
                 >
                     Sign Up
-            </a>
+                </button>
 
+            </form>
             <p class="registerSignInText">
                 Already have an account?
                 <a

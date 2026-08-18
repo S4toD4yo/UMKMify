@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* Lexend — the prototype ships the .ttf files under source/assets/fonts. */
+@font-face {
+    font-family: "Lexend";
+    src: url("../source/assets/fonts/Lexend-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Lexend";
+    src: url("../source/assets/fonts/Lexend-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Lexend";
+    src: url("../source/assets/fonts/Lexend-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Lexend";
+    src: url("../source/assets/fonts/Lexend-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Design tokens — see Design.md section 3, 4 and 5. */
+@theme {
+    --font-sans: "Lexend", system-ui, sans-serif;
+
+    --color-primary: #00b9fb;
+    --color-primary-dark: #0893fb;
+    --color-primary-light: #7cd8fd;
+    --color-primary-soft: #bae8fe;
+
+    --color-secondary: #faa500;
+    --color-accent: #f7931e;
+
+    --color-neutral: #f8f8ff;
+    --color-neutral-blue: #eff7fe;
+    --color-ink: #343434;
+    --color-muted: #c7c7cc;
+
+    --color-success: #3dcc3f;
+    --color-warning: #faa500;
+    --color-error: #ff3838;
+    --color-info: #00b9fb;
+
+    --text-caption: 0.75rem;
+    --text-h3: 1.5rem;
+    --text-h2: 2rem;
+    --text-h1: 3rem;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-neutral);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+    }
+}

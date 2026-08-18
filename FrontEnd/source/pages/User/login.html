@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>UMKMify | Login</title>
         <link rel="stylesheet" href="../../assets/styles.css">
+        <link rel="stylesheet" href="../../assets/authFeedback.css">
         <script src="../../App.js" defer></script>
     </head>
     <body class="loginAuthBody">
@@ -34,7 +35,7 @@
         </div>
 
         <!-- Login Container -->
-        <div class="loginContainer">
+        <form class="loginContainer" id="loginForm" novalidate>
             <h1 class="loginTitle">
                 Welcome Back!
             </h1>
@@ -52,10 +53,16 @@
 
                 <input
                     type="text"
+                    id="loginIdentifier"
+                    name="identifier"
                     class="loginFormInput"
                     placeholder="Enter your username or email address"
+                    autocomplete="username"
                     tabindex="1"
+                    required
                 >
+
+                <p class="authFieldError" id="loginIdentifierError"></p>
             </div>
 
 
@@ -97,17 +104,21 @@
 
                 </div>
 
+                <p class="authFieldError" id="loginPasswordError"></p>
+
             </div>
 
+            <p class="authFormError" id="loginFormError"></p>
+
             <!-- Sign In -->
-            <a
-                href="./homePage.html"
+            <button
                 type="submit"
+                id="loginSubmit"
                 class="loginSignInButton"
                 tabindex="3"
             >
                 Sign In
-            </a>
+            </button>
 
             <p class="loginSignUpText">
                 Don't have an account?
@@ -116,7 +127,7 @@
                 </a>
                 now
             </p>
-        </div>
+        </form>
 
         <!-- Auth Footer -->
         <footer class="authFooter">
