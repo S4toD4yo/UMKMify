@@ -343,6 +343,35 @@ async function setupNavbarAuthentication() {
     }
 }
 
+/* ----------------------------------------------------------------------- */
+/* List Product Button                                                     */
+/* ----------------------------------------------------------------------- */
+
+function setupListProductButton() {
+    const listProductButton = document.getElementById("listProductButton");
+
+    if (!listProductButton) {
+        return;
+    }
+
+    const token = tokenStore.get();
+
+    console.log("List Product Button:", listProductButton);
+    console.log("Authentication Token:", token);
+
+    if (token) {
+        listProductButton.href = "../Seller/newProduct.html";
+        console.log("User is authenticated. Redirecting to Seller Centre.");
+    } else {
+        listProductButton.href = "login.html";
+        console.log("User is not authenticated. Redirecting to Login.");
+    }
+
+    console.log("Final Button URL:", listProductButton.href);
+}
+
+// Sign Out Button
+
 async function setupSignOut() {
     const signOutButton = document.getElementById("signOutButton");
 
@@ -378,7 +407,9 @@ async function setupSignOut() {
     });
 }
 
+
+
 setupLoginForm();
 setupRegisterForm();
 setupNavbarAuthentication();
-
+setupListProductButton();
