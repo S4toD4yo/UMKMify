@@ -571,6 +571,15 @@ async function setupAuthPageGuard() {
 /* Product Image Drop Zone                                                 */
 /* ----------------------------------------------------------------------- */
 
+/* The files picked in the drop zone, shared with Save & Publish so it can
+   put them in the multipart request. Only ever mutated in place, never
+   reassigned, so both sides keep seeing the same array. */
+const selectedProductImages = [];
+
+/* Matches `images.*` => max:2048 on the API side, and the "Max 2MB" note
+   printed inside the drop zone. */
+const MAX_PRODUCT_IMAGE_BYTES = 2 * 1024 * 1024;
+
 function setupProductImageUpload() {
     const dropZone = document.getElementById("productImageDropZone");
     const fileInput = document.getElementById("productImageInput");
@@ -580,7 +589,7 @@ function setupProductImageUpload() {
         return;
     }
 
-    let productImages = [];
+    const productImages = selectedProductImages;
 
     function renderImageCards() {
         imageCards.forEach((card, index) => {
@@ -614,10 +623,25 @@ function setupProductImageUpload() {
         const imageFiles = Array.from(files)
             .filter((file) => file.type.startsWith("image/"));
 
+        // Caught here rather than after the whole form has been filled in and
+        // the API rejects the upload.
+        const tooLarge = imageFiles
+            .filter((file) => file.size > MAX_PRODUCT_IMAGE_BYTES);
+
+        if (tooLarge.length) {
+            alert(
+                "These images are larger than 2MB and were skipped:\n" +
+                tooLarge.map((file) => file.name).join("\n")
+            );
+        }
+
+        const accepted = imageFiles
+            .filter((file) => file.size <= MAX_PRODUCT_IMAGE_BYTES);
+
         const remainingSlots = imageCards.length - productImages.length;
 
         productImages.push(
-            ...imageFiles.slice(0, remainingSlots)
+            ...accepted.slice(0, remainingSlots)
         );
 
         renderImageCards();
@@ -688,6 +712,100 @@ if (sellingPriceInput) {
 }
 
 /* ----------------------------------------------------------------------- */
+/* Product Categories                                                      */
+/* ----------------------------------------------------------------------- */
+
+/* Both selects are filled from GET /api/categories rather than hardcoded in
+   the markup, so the ids always match what the database actually has. */
+async function setupProductCategories() {
+    const categorySelect = document.getElementById("productCategory");
+    const subcategorySelect = document.getElementById("productSubCategory");
+
+    if (!categorySelect || !subcategorySelect) {
+        return;
+    }
+
+    /* Clears a select back to a single disabled placeholder. */
+    function resetSelect(select, placeholder, disabled) {
+        select.innerHTML = "";
+
+        const option = document.createElement("option");
+
+        option.value = "";
+        option.selected = true;
+        option.disabled = true;
+        option.textContent = placeholder;
+
+        select.appendChild(option);
+        select.disabled = disabled;
+    }
+
+    /* textContent, not innerHTML: category names are data, and "Belts &
+       Wallets" has to stay readable either way. */
+    function addOption(select, value, label) {
+        const option = document.createElement("option");
+
+        option.value = value;
+        option.textContent = label;
+
+        select.appendChild(option);
+    }
+
+    let categories = [];
+
+    try {
+        const response = await fetch(`${API_BASE}/categories`, {
+            headers: {
+                Accept: "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Categories request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        categories = data.categories || [];
+    } catch (error) {
+        console.error("Failed to load categories:", error);
+
+        resetSelect(categorySelect, "Failed to load categories", false);
+        resetSelect(subcategorySelect, "Select Category First", true);
+
+        return;
+    }
+
+    resetSelect(categorySelect, "Select Category", false);
+
+    categories.forEach((category) => {
+        addOption(categorySelect, category.id, category.name);
+    });
+
+    /* The API rejects a sub category that does not sit under the chosen
+       category, so the options are rebuilt on every change. */
+    categorySelect.addEventListener("change", () => {
+        const category = categories.find(
+            (item) => String(item.id) === categorySelect.value
+        );
+
+        const subcategories = category ? category.subcategories : [];
+
+        if (!subcategories.length) {
+            resetSelect(subcategorySelect, "No Sub Category", true);
+            return;
+        }
+
+        resetSelect(subcategorySelect, "Select Sub Category", false);
+
+        subcategories.forEach((subcategory) => {
+            addOption(subcategorySelect, subcategory.id, subcategory.name);
+        });
+    });
+}
+
+
+/* ----------------------------------------------------------------------- */
 /* Product Status                                                          */
 /* ----------------------------------------------------------------------- */
 
@@ -721,6 +839,19 @@ function setupProductStatus() {
     });
 }
 
+/* A 422 comes back as { message, errors: { field: [...] } }, where `message`
+   is only the first error plus "(and 3 more errors)". Listing them all
+   matters most for the images, which fail one file at a time. */
+function validationMessage(data) {
+    if (data && data.errors) {
+        return Object.values(data.errors)
+            .flat()
+            .join("\n");
+    }
+
+    return (data && data.message) || "Failed to publish product.";
+}
+
 // Save & Publish
 function setupSavePublish() {
     const button = document.querySelector(".savePublishButton");
@@ -737,17 +868,18 @@ function setupSavePublish() {
             return;
         }
 
-        const payload = {
+        const fields = {
             name: document.getElementById("productName").value.trim(),
             sku: document.getElementById("productSku").value.trim(),
 
-            category_id: Number(
-                document.getElementById("productCategory").value
-            ),
+            // Left as the raw select value. An untouched select reads "",
+            // which the API turns into null; Number("") would send 0, and
+            // there is no category 0.
+            category_id:
+                document.getElementById("productCategory").value,
 
-            subcategory_id: Number(
-                document.getElementById("productSubCategory").value
-            ),
+            subcategory_id:
+                document.getElementById("productSubCategory").value,
 
             description:
                 document.getElementById("productDescription").value.trim(),
@@ -794,7 +926,23 @@ function setupSavePublish() {
                     : "nonactive",
         };
 
-        console.log("Product Payload:", payload);
+        // multipart/form-data rather than JSON: the product images are real
+        // files, and JSON has nowhere to put them.
+        const form = new FormData();
+
+        Object.entries(fields).forEach(([field, value]) => {
+            form.append(field, value);
+        });
+
+        selectedProductImages.forEach((image) => {
+            form.append("images[]", image, image.name);
+        });
+
+        console.log(
+            "Product Payload:",
+            fields,
+            `${selectedProductImages.length} image(s)`
+        );
 
         button.disabled = true;
         button.textContent = "Publishing...";
@@ -806,12 +954,14 @@ function setupSavePublish() {
                     method: "POST",
 
                     headers: {
-                        "Content-Type": "application/json",
+                        // Content-Type is left out on purpose: the browser
+                        // has to set it so the multipart boundary goes with
+                        // it.
                         Accept: "application/json",
                         Authorization: `Bearer ${token}`,
                     },
 
-                    body: JSON.stringify(payload),
+                    body: form,
                 }
             );
 
@@ -825,10 +975,7 @@ function setupSavePublish() {
                     data
                 );
 
-                alert(
-                    data.message ||
-                    "Failed to publish product."
-                );
+                alert(validationMessage(data));
 
                 return;
             }
@@ -860,6 +1007,8 @@ function setupSavePublish() {
 setupSavePublish();
 
 setupProductStatus();
+
+setupProductCategories();
 
 setupProductImageUpload();
 

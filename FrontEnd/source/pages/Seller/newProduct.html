@@ -243,6 +243,7 @@
                             <span class="requiredMark">*</span>
                         </label>
 
+                        <!-- Options come from GET /api/categories -->
                         <select
                             id="productCategory"
                             name="productCategory"
@@ -253,43 +254,7 @@
                                 selected
                                 disabled
                             >
-                                Select Category
-                            </option>
-
-                            <option value="1">
-                                Accessories
-                            </option>
-
-                            <option value="2">
-                                Beverage
-                            </option>
-
-                            <option value="3">
-                                Electronics
-                            </option>
-
-                            <option value="4">
-                                Fashion
-                            </option>
-
-                            <option value="5">
-                                Handcraft
-                            </option>
-
-                            <option value="6">
-                                Health
-                            </option>
-
-                            <option value="7">
-                                Hobbies
-                            </option>
-
-                            <option value="8">
-                                Food
-                            </option>
-
-                            <option value="9">
-                                Plants
+                                Loading categories...
                             </option>
                         </select>
 
@@ -307,17 +272,19 @@
                             <span class="requiredMark"></span>
                         </label>
 
+                        <!-- Filled in once a category is picked -->
                         <select
                             id="productSubCategory"
                             name="productSubCategory"
                             class="addProductFormSelect"
+                            disabled
                         >
                             <option
                                 value=""
                                 selected
                                 disabled
                             >
-                                Select
+                                Select Category First
                             </option>
                         </select>
 
@@ -359,6 +326,7 @@
                         type="file"
                         id="productImageInput"
                         accept="image/png, image/jpeg"
+                        multiple
                         hidden
                     >
 
