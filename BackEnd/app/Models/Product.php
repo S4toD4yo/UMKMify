@@ -22,6 +22,13 @@ class Product extends Model
     public const SHIPPING_FEE_BUYER = 'buyer';
     public const SHIPPING_FEE_SELLER = 'seller';
 
+    /**
+     * Anything below this — but not yet at zero — is what the Product List
+     * calls "Need to Restock". The database has no such column: it is a
+     * reading of `stock`, so the threshold lives here rather than in a row.
+     */
+    public const LOW_STOCK_THRESHOLD = 10;
+
     protected $fillable = [
         'store_id',
         'name',
@@ -91,5 +98,31 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
+    }
+
+    /**
+     * The image the Product List shows in the row. Falls back to the first
+     * one when no row was flagged primary.
+     */
+    public function primaryImage(): ?ProductImage
+    {
+        return $this->images->firstWhere('is_primary', true) ?? $this->images->first();
+    }
+
+    /**
+     * One of `out_of_stock`, `low_stock`, `in_stock` — the three buckets the
+     * Product List summary counts.
+     */
+    public function stockStatus(): string
+    {
+        if ($this->stock <= 0) {
+            return 'out_of_stock';
+        }
+
+        if ($this->stock < self::LOW_STOCK_THRESHOLD) {
+            return 'low_stock';
+        }
+
+        return 'in_stock';
     }
 }

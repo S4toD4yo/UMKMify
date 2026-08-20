@@ -2885,3 +2885,269 @@ body {
 .sellerContent {
     padding-bottom: 112px;
 }
+
+.sellerContentSubtitle {
+    margin: 8px 0 0;
+
+    color: #343434;
+    opacity: 50%;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.productListSummary {
+    margin-top: 24px;
+
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.productListSummaryContainer {
+    width: 100%;
+    padding: 24px 16px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}   
+
+.productListSummaryTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.productListSummaryValue {
+    margin: 8px 0 0;
+
+    color: #00B9FB;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+.productList {
+    margin-top: 24px;
+
+    width: 100%;
+
+    background-color: #F8F8FF;
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+
+    overflow: hidden;
+}
+
+.productListHeader,
+.productListRow {
+    display: grid;
+    grid-template-columns:
+        minmax(128px, 2fr)
+        minmax(64px, 1fr)
+        minmax(64px, 1fr)
+        minmax(64px, 1fr)
+        minmax(128px, 1fr)
+        minmax(128px, 1fr)
+        104px;
+
+    align-items: center;
+    column-gap: 16px;
+
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.productListHeader {
+    border-bottom: 1px solid rgba(52, 52, 52, 0.16);
+}
+
+.productListHeader p,
+.productListRow p {
+    margin: 0;
+
+    color: #343434;
+    font-family: "Lexend", sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5%;
+}
+
+.productListHeader p {
+    font-weight: 500;
+}
+
+.productListRow p {
+    font-weight: 400;
+}
+
+.productListProduct {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    min-width: 0;
+}
+
+.productListProductImage {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 4px;
+}
+
+.productListProduct p {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.productListActions {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 16px;
+
+    box-sizing: border-box;
+}
+
+.productListActionButton {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+
+    background-color: transparent;
+
+    border: none;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.productListActionButton img {
+    width: 24px;
+    height: 24px;
+
+    display: block;
+}
+
+/* Rows land in here, under the static header. */
+.productListBody {
+    width: 100%;
+}
+
+.productListRow + .productListRow {
+    border-top: 1px solid rgba(52, 52, 52, 0.08);
+}
+
+/* Loading, empty and error all read as one centred line of text. */
+.productListState {
+    margin: 0;
+    padding: 32px 16px;
+
+    text-align: center;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-family: "Lexend", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Stands in for the thumbnail when a product has no image yet. */
+.productListProductImageEmpty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(52, 52, 52, 0.08);
+}
+
+.productListProductImageEmpty img {
+    width: 20px;
+    height: 20px;
+
+    display: block;
+
+    opacity: 0.48;
+}
+
+/* One badge per row, painted by productStatusBadge() in App.js. "Need to
+   Restock" is the longest label, hence the nowrap and the wider track. */
+.productListStatus {
+    justify-self: start;
+
+    padding: 4px 12px;
+
+    font-family: "Lexend", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+
+    white-space: nowrap;
+
+    border-radius: 999px;
+}
+
+.productListStatus.active {
+    color: #3DCC3F;
+    background-color: rgba(61, 204, 63, 0.16);
+}
+
+.productListStatus.nonactive {
+    color: #FF3838;
+    background-color: rgba(255, 56, 56, 0.16);
+}
+
+.productListStatus.outOfStock {
+    color: #FF3838;
+    background-color: rgba(255, 56, 56, 0.16);
+}
+
+.productListStatus.needRestock {
+    color: #FAA500;
+    background-color: rgba(250, 165, 0, 0.16);
+}
+
+.productListActionButton:hover {
+    background-color: rgba(52, 52, 52, 0.08);
+}
+
+.productListActionButton:disabled {
+    opacity: 0.48;
+    cursor: default;
+}

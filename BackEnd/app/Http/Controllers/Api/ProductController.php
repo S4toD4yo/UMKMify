@@ -20,24 +20,161 @@ use Illuminate\Validation\ValidationException;
 class ProductController extends Controller
 {
     /**
-     * The signed-in seller's products, newest first. Backs productList.html.
+     * The signed-in seller's products, newest first. Backs productList.html:
+     * the table rows plus the five summary cards above them.
+     *
+     * Optional query string, all coming from the Product List controls:
+     * `search`, `status`, `stock`, `sort`.
      */
     public function index(Request $request): JsonResponse
     {
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'in:' . Product::STATUS_ACTIVE . ',' . Product::STATUS_NONACTIVE],
+            'stock' => ['nullable', 'in:in_stock,low_stock,out_of_stock'],
+            'sort' => ['nullable', 'in:newest,oldest,name,price_low,price_high,stock_low,stock_high'],
+        ]);
+
         $store = Store::where('owner_id', $request->user()->id)->first();
 
+        // No store yet means the seller has never published anything. That is
+        // an empty list, not an error — the page renders its empty state.
         if (! $store) {
-            return response()->json(['products' => []]);
+            return response()->json([
+                'products' => [],
+                'summary' => $this->emptySummary(),
+            ]);
         }
 
-        $products = Product::with(['images', 'category', 'subcategory'])
-            ->where('store_id', $store->id)
-            ->orderByDesc('id')
-            ->get()
+        $query = Product::with(['images', 'category', 'subcategory'])
+            ->where('store_id', $store->id);
+
+        if (! empty($filters['search'])) {
+            // Escaped by hand: LIKE treats % and _ as wildcards, so a search
+            // for "SKU_01" would otherwise match "SKU-01" too.
+            $term = '%' . addcslashes($filters['search'], '%_\\') . '%';
+
+            $query->where(function ($builder) use ($term) {
+                $builder->where('name', 'like', $term)
+                    ->orWhere('sku', 'like', $term);
+            });
+        }
+
+        if (! empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        match ($filters['stock'] ?? null) {
+            'out_of_stock' => $query->where('stock', '<=', 0),
+            'low_stock' => $query->where('stock', '>', 0)
+                ->where('stock', '<', Product::LOW_STOCK_THRESHOLD),
+            'in_stock' => $query->where('stock', '>=', Product::LOW_STOCK_THRESHOLD),
+            default => null,
+        };
+
+        match ($filters['sort'] ?? 'newest') {
+            'oldest' => $query->orderBy('id'),
+            'name' => $query->orderBy('name'),
+            'price_low' => $query->orderBy('price'),
+            'price_high' => $query->orderByDesc('price'),
+            'stock_low' => $query->orderBy('stock'),
+            'stock_high' => $query->orderByDesc('stock'),
+            default => $query->orderByDesc('id'),
+        };
+
+        $products = $query->get()
             ->map(fn (Product $product) => $this->productPayload($product))
             ->all();
 
-        return response()->json(['products' => $products]);
+        return response()->json([
+            'products' => $products,
+
+            // Counted over the whole store, not over the filtered rows: the
+            // cards are a picture of the catalogue, and the filters are how
+            // the seller drills into it.
+            'summary' => $this->summary($store->id),
+        ]);
+    }
+
+    /**
+     * One product, for the row's Edit button.
+     */
+    public function show(Request $request, Product $product): JsonResponse
+    {
+        $this->authorizeProduct($request, $product);
+
+        $product->load(['images', 'category', 'subcategory']);
+
+        return response()->json(['product' => $this->productPayload($product)]);
+    }
+
+    /**
+     * Soft delete, for the row's Delete button. The `products` row keeps its
+     * `deleted_at` and the image files stay on disk, so an order that already
+     * points at this product still resolves.
+     */
+    public function destroy(Request $request, Product $product): JsonResponse
+    {
+        $this->authorizeProduct($request, $product);
+
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Product deleted successfully.',
+            'product_id' => $product->id,
+            'summary' => $this->summary($product->store_id),
+        ]);
+    }
+
+    /**
+     * A product belonging to somebody else is a 404 rather than a 403: the
+     * seller has no business knowing the id exists.
+     */
+    private function authorizeProduct(Request $request, Product $product): void
+    {
+        $store = Store::where('owner_id', $request->user()->id)->first();
+
+        if (! $store || $product->store_id !== $store->id) {
+            abort(404);
+        }
+    }
+
+    /**
+     * The five cards above the table, in one aggregate query.
+     *
+     * @return array<string, int>
+     */
+    private function summary(int $storeId): array
+    {
+        $counts = Product::where('store_id', $storeId)
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('COUNT(CASE WHEN status = ? THEN 1 END) as published', [Product::STATUS_ACTIVE])
+            ->selectRaw('COUNT(CASE WHEN status <> ? THEN 1 END) as draft', [Product::STATUS_ACTIVE])
+            ->selectRaw('COUNT(CASE WHEN stock <= 0 THEN 1 END) as out_of_stock')
+            ->selectRaw('COUNT(CASE WHEN stock > 0 AND stock < ? THEN 1 END) as need_restock', [Product::LOW_STOCK_THRESHOLD])
+            ->first();
+
+        return [
+            'total' => (int) $counts->total,
+            'published' => (int) $counts->published,
+            'draft' => (int) $counts->draft,
+            'out_of_stock' => (int) $counts->out_of_stock,
+            'need_restock' => (int) $counts->need_restock,
+        ];
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function emptySummary(): array
+    {
+        return [
+            'total' => 0,
+            'published' => 0,
+            'draft' => 0,
+            'out_of_stock' => 0,
+            'need_restock' => 0,
+        ];
     }
 
     /**
@@ -222,7 +359,17 @@ class ProductController extends Controller
             'height' => $product->height,
             'shipping_fee_payer' => $product->shipping_fee_type,
             'status' => $product->status,
+            'is_published' => $product->status === Product::STATUS_ACTIVE,
+            'stock_status' => $product->stockStatus(),
             'published_at' => $product->published_at?->toIso8601String(),
+
+            // The Product List has a Created Date column.
+            'created_at' => $product->created_at?->toIso8601String(),
+            'updated_at' => $product->updated_at?->toIso8601String(),
+
+            // Saves the row from digging through `images` for its thumbnail.
+            'primary_image' => $product->primaryImage()?->url(),
+
             'images' => $product->images
                 ->map(fn (ProductImage $image) => [
                     'id' => $image->id,

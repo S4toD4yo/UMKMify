@@ -8,112 +8,172 @@
         <script src="../../App.js" defer></script>
         <link rel="icon" type="image/png" href="../../assets/images/UMKMify Title Logo.png">
     </head>
-<body>
+    <body>
 
-    <!-- Seller Centre Navbar -->
-    <nav class="sellerNavbar">
+        <!-- Seller Centre Navbar -->
+        <nav class="sellerNavbar">
 
-        <!-- Back Button -->
-        <a
-            href="../User/homePage.html"
-            class="sellerNavbarBack"
-            aria-label="Back to Dashboard"
-            title="Back to Dashboard"
-        >
-            <img
-                src="../../assets/icons/SellerCentre/ArrowLeft.svg"
-                alt=""
-                class="sellerNavbarBackIcon"
-            >
-        </a>
-
-        <a href="dashboard.html" class="sellerNavbarLogoLink">
-            <img
-                src="../../assets/images/Logo - White Background.svg"
-                alt="UMKMify"
-                class="sellerNavbarLogo"
-            >
-        </a>
-
-        <p class="sellerNavbarTitle">
-            Seller Centre
-        </p>
-
-        <!-- Profile -->
-        <div class="sellerNavbarAuth" id="sellerNavbarAuth">
+            <!-- Back Button -->
             <a
-                href="../User/login.html"
-                class="signInButton"
-                id="sellerSignInButton"
+                href="../User/homePage.html"
+                class="sellerNavbarBack"
+                aria-label="Back to Dashboard"
+                title="Back to Dashboard"
             >
-                Sign In
-            </a>
-        </div>
-    </nav>
-
-    <!-- Seller Side Navbar -->
-    <aside class="sellerSideNavbar">
-
-        <nav class="sellerSideNavbarMenu">
-
-            <a href="dashboard.html" class="sellerSideNavbarButton">
                 <img
-                    src="../../assets/icons/SellerCentre/House.svg"
+                    src="../../assets/icons/SellerCentre/ArrowLeft.svg"
                     alt=""
-                    class="sellerSideNavbarIcon"
+                    class="sellerNavbarBackIcon"
                 >
-
-                <h3 class="sellerSideNavbarText">
-                    Dashboard
-                </h3>
             </a>
 
-            <a href="orders.html" class="sellerSideNavbarButton" >
+            <a href="dashboard.html" class="sellerNavbarLogoLink">
                 <img
-                    src="../../assets/icons/SellerCentre/Notepad.svg"
-                    alt=""
-                    class="sellerSideNavbarIcon"
+                    src="../../assets/images/Logo - White Background.svg"
+                    alt="UMKMify"
+                    class="sellerNavbarLogo"
                 >
-
-                <h3 class="sellerSideNavbarText">
-                    Orders
-                </h3>
             </a>
 
-            <div class="sellerSideNavbarButton active">
-                <img
-                    src="../../assets/icons/SellerCentre/Package.svg"
-                    alt=""
-                    class="sellerSideNavbarIcon"
+            <p class="sellerNavbarTitle">
+                Seller Centre
+            </p>
+
+            <!-- Profile -->
+            <div class="sellerNavbarAuth" id="sellerNavbarAuth">
+                <a
+                    href="../User/login.html"
+                    class="signInButton"
+                    id="sellerSignInButton"
                 >
-
-                <h3 class="sellerSideNavbarText active">
-                    Products
-                </h3>
-            </div>
-
-            <!-- Product Submenu -->
-            <div class="sellerProductSubmenu">
-
-                <a href="productList.html" class="sellerProductSubmenuLink active">
-                    <span>・</span>
-                    Product List
+                    Sign In
                 </a>
-
-                <a href="newProduct.html" class="sellerProductSubmenuLink">
-                    <span>・</span>
-                    Add New Product
-                </a>
-
             </div>
         </nav>
-        
-        <!-- Footer -->
-        <p class="sellerSideNavbarFooter">
-            &copy; 2026 UMKMify. All rights reserved.
-        </p>
 
-    </aside>
-    
-</body>
+        <!-- Seller Side Navbar -->
+        <aside class="sellerSideNavbar">
+
+            <nav class="sellerSideNavbarMenu">
+
+                <a href="dashboard.html" class="sellerSideNavbarButton">
+                    <img
+                        src="../../assets/icons/SellerCentre/House.svg"
+                        alt=""
+                        class="sellerSideNavbarIcon"
+                    >
+
+                    <h3 class="sellerSideNavbarText">
+                        Dashboard
+                    </h3>
+                </a>
+
+                <a href="orders.html" class="sellerSideNavbarButton" >
+                    <img
+                        src="../../assets/icons/SellerCentre/Notepad.svg"
+                        alt=""
+                        class="sellerSideNavbarIcon"
+                    >
+
+                    <h3 class="sellerSideNavbarText">
+                        Orders
+                    </h3>
+                </a>
+
+                <div class="sellerSideNavbarButton active">
+                    <img
+                        src="../../assets/icons/SellerCentre/Package.svg"
+                        alt=""
+                        class="sellerSideNavbarIcon"
+                    >
+
+                    <h3 class="sellerSideNavbarText active">
+                        Products
+                    </h3>
+                </div>
+
+                <!-- Product Submenu -->
+                <div class="sellerProductSubmenu">
+
+                    <a href="productList.html" class="sellerProductSubmenuLink active">
+                        <span>・</span>
+                        Product List
+                    </a>
+
+                    <a href="newProduct.html" class="sellerProductSubmenuLink">
+                        <span>・</span>
+                        Add New Product
+                    </a>
+
+                </div>
+            </nav>
+            
+            <!-- Footer -->
+            <p class="sellerSideNavbarFooter">
+                &copy; 2026 UMKMify. All rights reserved.
+            </p>
+
+        </aside>
+        
+        <!-- Seller Content -->
+        <main class="sellerContent">
+            <!-- Page Title -->
+            <h1 class="sellerContentTitle">
+                Product List
+            </h1>
+
+            <p class="sellerContentSubtitle">
+                This feature is under development.
+            </p>
+
+            <div class="productListSummary">
+                <div class="productListSummaryContainer">
+                    <p class="productListSummaryTitle">Total Products</p>
+                    <h3 class="productListSummaryValue" id="productSummaryTotal">0</h3>
+                </div>
+
+                <div class="productListSummaryContainer">
+                    <p class="productListSummaryTitle">Published</p>
+                    <h3 class="productListSummaryValue" id="productSummaryPublished">0</h3>
+                </div>
+
+                <div class="productListSummaryContainer">
+                    <p class="productListSummaryTitle">Draft</p>
+                    <h3 class="productListSummaryValue" id="productSummaryDraft">0</h3>
+                </div>
+
+                <div class="productListSummaryContainer">
+                    <p class="productListSummaryTitle">Out of Stock</p>
+                    <h3 class="productListSummaryValue" id="productSummaryOutOfStock">0</h3>
+                </div>
+
+                <div class="productListSummaryContainer">
+                    <p class="productListSummaryTitle">Need to Restock</p>
+                    <h3 class="productListSummaryValue" id="productSummaryNeedRestock">0</h3>
+                </div>
+            </div>
+
+            <div class="productList">
+                <div class="productListHeader">
+                    <p>Product</p>
+                    <p>SKU</p>
+                    <p>Price</p>
+                    <p>Stock</p>
+                    <p>Status</p>
+                    <p>Created Date</p>
+                    <p></p>
+                </div>
+
+                <!-- Rows are painted by setupProductList() in App.js from
+                     GET /api/products. -->
+                <div class="productListBody" id="productListBody">
+                    <p class="productListState" id="productListState">
+                        Loading your products...
+                    </p>
+                </div>
+            </div>
+
+        </main>
+
+    </body>
 </html>

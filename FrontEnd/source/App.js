@@ -1004,6 +1004,311 @@ function setupSavePublish() {
     });
 }
 
+/* ----------------------------------------------------------------------- */
+/* Product List                                                            */
+/* ----------------------------------------------------------------------- */
+
+/* Product names, SKUs and image paths are seller input and the rows are built
+   as HTML, so everything that comes back from the API goes through here. */
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+    }[character]));
+}
+
+/* `price` is decimal(15,2) and arrives as a string ("9000000.00"). The form
+   only ever takes whole rupiah, so the cents are dropped. */
+function formatRupiah(value) {
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount)) {
+        return "Rp 0";
+    }
+
+    return "Rp " + amount.toLocaleString("id-ID", { maximumFractionDigits: 0 });
+}
+
+// "20 Aug 2026", matching the Created Date column in the design.
+function formatProductDate(value) {
+    if (!value) {
+        return "-";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "-";
+    }
+
+    return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+}
+
+function renderProductSummary(summary) {
+    const slots = {
+        productSummaryTotal: summary.total,
+        productSummaryPublished: summary.published,
+        productSummaryDraft: summary.draft,
+        productSummaryOutOfStock: summary.out_of_stock,
+        productSummaryNeedRestock: summary.need_restock,
+    };
+
+    Object.entries(slots).forEach(([id, value]) => {
+        const slot = document.getElementById(id);
+
+        if (slot) {
+            slot.textContent = value ?? 0;
+        }
+    });
+}
+
+/* The Status column reads `status` and `stock` together, so one product only
+   ever carries one badge:
+
+     Nonactive        the product is not listed, and its stock says nothing
+     Out of Stock     listed, stock 0
+     Need to Restock  listed, stock below Product::LOW_STOCK_THRESHOLD
+     Active           listed, stocked
+
+   Nonactive wins over both stock readings on purpose: an unlisted product is
+   not on sale, so warning about its stock would be a false alarm. */
+function productStatusBadge(product) {
+    if (!product.is_published) {
+        return { label: "Nonactive", className: "nonactive" };
+    }
+
+    if (product.stock_status === "out_of_stock") {
+        return { label: "Out of Stock", className: "outOfStock" };
+    }
+
+    if (product.stock_status === "low_stock") {
+        return { label: "Need to Restock", className: "needRestock" };
+    }
+
+    return { label: "Active", className: "active" };
+}
+
+function productRowMarkup(product) {
+    /* No image yet is a real case: the drop zone on Add New Product is
+       optional, so fall back to the same icon it uses. */
+    const thumbnail = product.primary_image
+        ? `<img
+                src="${escapeHtml(product.primary_image)}"
+                alt=""
+                class="productListProductImage"
+            >`
+        : `<span class="productListProductImage productListProductImageEmpty">
+                <img src="../../assets/icons/SellerCentre/Image.svg" alt="">
+            </span>`;
+
+    // The API decides the stock bucket; this only paints it.
+    const status = productStatusBadge(product);
+
+    const name = escapeHtml(product.name);
+
+    return `
+        <div class="productListRow" data-product-id="${product.id}">
+            <div class="productListProduct">
+                ${thumbnail}
+                <p title="${name}">${name}</p>
+            </div>
+
+            <p>${escapeHtml(product.sku)}</p>
+            <p>${formatRupiah(product.price)}</p>
+            <p>${Number(product.stock) || 0}</p>
+
+            <span class="productListStatus ${status.className}">${status.label}</span>
+
+            <p>${formatProductDate(product.created_at)}</p>
+
+            <div class="productListActions">
+                <a
+                    href="../Error/comingSoon.html"
+                    class="productListActionButton"
+                    title="Edit ${name}"
+                >
+                    <img
+                        src="../../assets/icons/SellerCentre/PencilSimple.svg"
+                        alt="Edit"
+                    >
+                </a>
+
+                <button
+                    class="productListActionButton"
+                    type="button"
+                    data-action="delete"
+                    title="Delete ${name}"
+                >
+                    <img
+                        src="../../assets/icons/SellerCentre/Trash.svg"
+                        alt="Delete"
+                    >
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Loading, empty and error all share one centred line inside the table.
+function showProductListState(body, message) {
+    body.innerHTML = `<p class="productListState">${escapeHtml(message)}</p>`;
+}
+
+const PRODUCT_LIST_EMPTY =
+    "No products yet. Use Add New Product to list your first one.";
+
+function setupProductList() {
+    const body = document.getElementById("productListBody");
+
+    if (!body) {
+        return;
+    }
+
+    async function loadProducts() {
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "../User/login.html";
+            return;
+        }
+
+        showProductListState(body, "Loading your products...");
+
+        let response;
+
+        try {
+            response = await fetch(`${API_BASE}/products`, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error("Failed to load products:", error);
+
+            showProductListState(
+                body,
+                "Unable to reach the server. Please make sure Laravel is running."
+            );
+
+            return;
+        }
+
+        if (response.status === 401) {
+            tokenStore.clear();
+            window.location.href = "../User/login.html";
+            return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            console.error("Failed to load products:", data);
+
+            showProductListState(
+                body,
+                data.message || "Failed to load your products."
+            );
+
+            return;
+        }
+
+        renderProductSummary(data.summary || {});
+
+        const products = data.products || [];
+
+        if (!products.length) {
+            showProductListState(body, PRODUCT_LIST_EMPTY);
+            return;
+        }
+
+        body.innerHTML = products.map(productRowMarkup).join("");
+    }
+
+    /* Delegated: the rows are replaced wholesale on every load, so binding
+       per button would mean rebinding every time. */
+    body.addEventListener("click", async (event) => {
+        const button = event.target.closest('[data-action="delete"]');
+
+        if (!button) {
+            return;
+        }
+
+        const row = button.closest(".productListRow");
+        const productId = row && row.dataset.productId;
+
+        if (!productId) {
+            return;
+        }
+
+        const name = row.querySelector(".productListProduct p").textContent;
+
+        if (!window.confirm(`Delete "${name}"? This cannot be undone from here.`)) {
+            return;
+        }
+
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "../User/login.html";
+            return;
+        }
+
+        button.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE}/products/${productId}`, {
+                method: "DELETE",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                console.error("Failed to delete product:", data);
+
+                alert(data.message || "Failed to delete this product.");
+
+                button.disabled = false;
+
+                return;
+            }
+
+            row.remove();
+
+            // The API sends the recounted cards back, so the summary stays
+            // right without a second round trip.
+            renderProductSummary(data.summary || {});
+
+            if (!body.querySelector(".productListRow")) {
+                showProductListState(body, PRODUCT_LIST_EMPTY);
+            }
+
+        } catch (error) {
+            console.error("Failed to delete product:", error);
+
+            alert(
+                "Unable to connect to the server. Please make sure Laravel is running."
+            );
+
+            button.disabled = false;
+        }
+    });
+
+    loadProducts();
+}
+
 setupSavePublish();
 
 setupProductStatus();
@@ -1019,5 +1324,7 @@ setupNavbarAuthentication();
 setupSellerNavbarAuthentication();
 
 setupListProductButton();
+
+setupProductList();
 
 setupAuthPageGuard();

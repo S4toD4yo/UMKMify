@@ -28,6 +28,11 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
     Route::post('/products', [ProductController::class, 'store']);
+
+    // Product List row actions. Both are scoped to the seller's own store in
+    // the controller, so an id from another store reads as a 404.
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 });
 
 Route::prefix('auth')->group(function () {
