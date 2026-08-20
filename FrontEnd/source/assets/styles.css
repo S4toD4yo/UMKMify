@@ -578,6 +578,121 @@ body {
     opacity: 0.5;
 }
 
+/* Latest Product Cards */
+.latestProductGrid {
+    margin-top: 44px;
+
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+}
+
+.latestProductCard {
+    display: flex;
+    flex-direction: column;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+
+    overflow: hidden;
+
+    text-decoration: none;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.latestProductCard:hover {
+    transform: translateY(-4px);
+
+    box-shadow: 0 8px 24px 0 rgba(52, 52, 52, 0.24);
+}
+
+.latestProductCard:active {
+    opacity: 0.5;
+}
+
+/* Square, so a portrait and a landscape photo still line up in the grid. */
+.latestProductCardImage {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    display: block;
+
+    object-fit: cover;
+
+    background-color: rgba(52, 52, 52, 0.08);
+}
+
+/* Stands in when a product was listed without a photo. */
+.latestProductCardImageEmpty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.latestProductCardImageEmpty img {
+    width: 44px;
+    height: 44px;
+
+    opacity: 0.48;
+}
+
+.latestProductCardBody {
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    box-sizing: border-box;
+}
+
+/* Two lines, then an ellipsis: the cards have to stay the same height. */
+.latestProductCardName {
+    margin: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    line-height: 1.4;
+}
+
+.latestProductCardPrice {
+    margin: 0;
+
+    color: #00B9FB;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+.latestProductCardMeta {
+    margin: 0;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
 /* Why Choose */
 .whyChoose {
     margin-top: 64px;
@@ -661,6 +776,352 @@ body {
     border-radius: 8px;
 
     box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+/* Product Page */
+.productPage {
+    padding-left: 64px;
+    padding-right: 64px;
+    margin-top: 170px;
+}
+
+/* Loading and error share one centred line. */
+.productPageState {
+    margin: 0;
+    padding: 64px 0;
+
+    text-align: center;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 18px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.productDetail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+
+    align-items: start;
+}
+
+/* Gallery */
+.productGallery {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    min-width: 0;
+}
+
+.productGalleryMain {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+
+    overflow: hidden;
+}
+
+.productGalleryMain img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+/* The placeholder icon must not be stretched to fill the frame. */
+.productGalleryMain.isEmpty img {
+    width: 96px;
+    height: 96px;
+
+    object-fit: contain;
+
+    opacity: 0.48;
+}
+
+.productGalleryThumbs {
+    display: flex;
+    gap: 16px;
+
+    flex-wrap: wrap;
+}
+
+.productGalleryThumb {
+    width: 88px;
+    height: 88px;
+    padding: 0;
+
+    flex-shrink: 0;
+
+    background-color: #F8F8FF;
+
+    border: 2px solid transparent;
+    border-radius: 4px;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    transition: border-color 0.15s ease;
+}
+
+.productGalleryThumb img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.productGalleryThumb.active {
+    border-color: #00B9FB;
+}
+
+/* Summary */
+.productSummary {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+.productDetailCategory {
+    margin: 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.productDetailName {
+    margin: 8px 0 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+    line-height: 1.2;
+}
+
+.productDetailPrice {
+    margin: 16px 0 0;
+
+    color: #00B9FB;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+/* The three stock readings match the ones the Product List badges use. */
+.productDetailStock {
+    margin: 16px 0 0;
+
+    color: #3DCC3F;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.productDetailStock.lowStock {
+    color: #FAA500;
+}
+
+.productDetailStock.outOfStock {
+    color: #FF3838;
+}
+
+/* Facts */
+.productDetailFacts {
+    margin: 24px 0 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    row-gap: 12px;
+    column-gap: 16px;
+}
+
+.productDetailFacts dt {
+    margin: 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.productDetailFacts dd {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+/* Actions */
+.productDetailActions {
+    margin-top: 32px;
+
+    display: flex;
+    gap: 16px;
+}
+
+.productDetailBuyButton,
+.productDetailCartButton {
+    padding: 12px 24px;
+
+    display: block;
+
+    border-radius: 4px;
+
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.productDetailBuyButton {
+    background-color: #00B9FB;
+    color: #F8F8FF;
+}
+
+.productDetailBuyButton:hover {
+    background-color: #7CD8FD;
+}
+
+.productDetailCartButton {
+    background-color: transparent;
+    color: #00B9FB;
+
+    box-shadow: inset 0 0 0 2px #00B9FB;
+}
+
+.productDetailCartButton:hover {
+    background-color: rgba(0, 185, 251, 0.12);
+}
+
+.productDetailBuyButton:active,
+.productDetailCartButton:active {
+    opacity: 0.5;
+}
+
+/* Seller */
+.productDetailSeller {
+    margin-top: 32px;
+    padding: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+.productDetailSellerInitial {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+
+    border-radius: 999px;
+
+    font-size: 18px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+}
+
+.productDetailSellerText {
+    min-width: 0;
+}
+
+.productDetailSellerName {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.productDetailSellerLocation {
+    margin: 4px 0 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Description */
+.productDescription {
+    margin-top: 64px;
+}
+
+.productDescriptionTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+/* pre-line, so the line breaks the seller typed survive. */
+.productDescriptionText {
+    margin: 24px 0 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 1.6;
+
+    white-space: pre-line;
 }
 
 /* Footer */

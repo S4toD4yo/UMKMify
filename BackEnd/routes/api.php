@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,13 @@ Route::get('/health', function () {
 
 // Public: the Add New Product form needs these before the seller submits.
 Route::get('/categories', [CategoryController::class, 'index']);
+
+// Public: the Latest Product section on the homepage, open to signed out
+// visitors, so this is deliberately outside the auth group.
+Route::get('/catalog/products', [CatalogController::class, 'index']);
+
+// Public: the product page a homepage card links to.
+Route::get('/catalog/products/{product}', [CatalogController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products', [ProductController::class, 'index']);

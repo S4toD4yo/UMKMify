@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAMA PRODUK</title>
+    <title>Product | UMKMify</title>
     <link rel="stylesheet" href="../../assets/styles.css">
     <script src="../../App.js" defer></script>
     <link rel="icon" type="image/png" href="../../assets/images/UMKMify Title Logo.png">
@@ -58,5 +58,156 @@
                 </div>
             </div>
         </nav>
+
+        <!-- Everything below is painted by setupProductDetail() in App.js
+             from GET /api/catalog/products/{id} -->
+        <main class="productPage">
+
+            <p class="productPageState" id="productPageState">
+                Loading product...
+            </p>
+
+            <div class="productDetail" id="productDetail" hidden>
+
+                <!-- Gallery -->
+                <section class="productGallery">
+
+                    <div class="productGalleryMain" id="productGalleryMain"></div>
+
+                    <div class="productGalleryThumbs" id="productGalleryThumbs"></div>
+
+                </section>
+
+                <!-- Summary -->
+                <section class="productSummary">
+
+                    <p class="productDetailCategory" id="productDetailCategory"></p>
+
+                    <h1 class="productDetailName" id="productDetailName"></h1>
+
+                    <p class="productDetailPrice" id="productDetailPrice"></p>
+
+                    <p class="productDetailStock" id="productDetailStock"></p>
+
+                    <dl class="productDetailFacts" id="productDetailFacts"></dl>
+
+                    <!-- The cart is not built yet, so both actions land on
+                         the Coming Soon page the rest of the site uses. -->
+                    <div class="productDetailActions">
+
+                        <a
+                            href="../Error/comingSoon.html"
+                            class="productDetailBuyButton"
+                        >
+                            Buy Now
+                        </a>
+
+                        <a
+                            href="../Error/comingSoon.html"
+                            class="productDetailCartButton"
+                        >
+                            Add to Cart
+                        </a>
+
+                    </div>
+
+                    <!-- Seller -->
+                    <div class="productDetailSeller">
+
+                        <span class="productDetailSellerInitial" id="productDetailSellerInitial"></span>
+
+                        <div class="productDetailSellerText">
+
+                            <p class="productDetailSellerName" id="productDetailSellerName"></p>
+
+                            <p class="productDetailSellerLocation" id="productDetailSellerLocation"></p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- Description -->
+            <section class="productDescription" id="productDescription" hidden>
+
+                <h2 class="productDescriptionTitle">
+                    Description
+                </h2>
+
+                <p class="productDescriptionText" id="productDescriptionText"></p>
+
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footerContent">
+                <div class="footerLeft">
+                    <img
+                        src="../../assets/images/Logo - Orange.svg"
+                        alt="UMKMify"
+                        class="footerLogo"
+                    >
+
+                    <p class="footerDescription">
+                        A digital platform that empowers local UMKM to grow and reach more customers.
+                    </p>
+                </div>
+
+                <!-- Menu -->
+                <div class="footerMenu">
+                    <h3 class="footerMenuTitle">
+                        Menu
+                    </h3>
+
+
+                    <nav class="footerMenuLinks">
+                        <a href="homePage.html">Homepage</a>
+                        <a href="../Category/category.html">Category</a>
+                        <a href="../Products/products.html">Products</a>
+                        <a href="aboutUs.html">About Us</a>
+                        <a href="contactUs.html">Contact Us</a>
+                    </nav>
+                </div>
+
+                <!-- Help -->
+                <div class="footerHelp">
+                    <h3 class="footerHelpTitle">
+                        Help
+                    </h3>
+
+                    <nav class="footerHelpLinks">
+                        <a href="../Error/comingSoon.html">How to Shop</a>
+                        <a href="../Error/comingSoon.html">Payment</a>
+                        <a href="../Error/comingSoon.html">Shipping</a>
+                        <a href="../Error/comingSoon.html">Returns & Refunds</a>
+                        <a href="../Error/comingSoon.html">FAQ</a>
+                    </nav>
+                </div>
+
+                <!-- Information -->
+                <div class="footerInformation">
+                    <h3 class="footerInformationTitle">
+                        Information
+                    </h3>
+
+                    <nav class="footerInformationLinks">
+                        <a href="aboutUs.html">About Us</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footerCopyright">
+                <p class="footerCopyrightText">
+                    &copy; 2026 UMKMify. All rights reserved.
+                </p>
+            </div>
+        </footer>
+
 </body>
 </html>

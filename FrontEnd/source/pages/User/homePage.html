@@ -170,14 +170,21 @@
                 </h1>
             </section>
 
-            <!-- Empty State -->
-             <h2 class="latestProductEmpty">
-                This website is waiting for its first product to be listed.
-            </h2>
+            <!-- Cards come from GET /api/catalog/products, painted by
+                 setupLatestProducts() in App.js -->
+            <div class="latestProductGrid" id="latestProductGrid" hidden></div>
 
-            <a href="login.html" class="latestProductButton" id="listProductButton"> 
-                Be the first to list a product on this website!
-            </a>
+            <!-- Empty State: still the fallback when nothing is listed yet,
+                 or when the API cannot be reached -->
+            <div id="latestProductEmptyState">
+                <h2 class="latestProductEmpty">
+                    This website is waiting for its first product to be listed.
+                </h2>
+
+                <a href="login.html" class="latestProductButton" id="listProductButton"> 
+                    Be the first to list a product on this website!
+                </a>
+            </div>
 
             <!-- Why Choose -->
             <section class="whyChoose">

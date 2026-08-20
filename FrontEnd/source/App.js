@@ -1058,6 +1058,300 @@ function setupSavePublish() {
 }
 
 /* ----------------------------------------------------------------------- */
+/* Product Page                                                            */
+/* ----------------------------------------------------------------------- */
+
+/* product.html, reached from a homepage card. Public like the homepage, so
+   no token goes with the request. */
+
+/* Only the rows the seller actually filled in are shown: half of these are
+   nullable columns, and an empty row reads as missing information rather
+   than as "not applicable". */
+function productDetailFacts(product) {
+    const dimensions = [product.length, product.width, product.height];
+
+    const hasDimensions = dimensions.every(
+        (value) => value !== null && value !== undefined && value !== ""
+    );
+
+    return [
+        ["Category", product.category],
+        ["Sub Category", product.subcategory],
+        ["Brand", product.brand],
+        ["Minimum Purchase", product.minimum_purchase
+            ? `${product.minimum_purchase} ${product.unit || ""}`.trim()
+            : null],
+        ["Unit", product.unit],
+        ["Weight", product.weight ? `${Number(product.weight)} g` : null],
+        ["Dimensions", hasDimensions
+            ? dimensions.map(Number).join(" × ") + " cm"
+            : null],
+        ["Shipping Fee", product.shipping_fee_payer
+            ? `Borne by ${product.shipping_fee_payer}`
+            : null],
+        ["Location", product.location],
+    ].filter(([, value]) => value !== null && value !== undefined && value !== "");
+}
+
+/* The same three readings the Product List badges use, worded for a shopper
+   rather than for the seller. */
+function productDetailStock(stock) {
+    const count = Number(stock) || 0;
+
+    if (count <= 0) {
+        return { label: "Out of stock", className: "outOfStock" };
+    }
+
+    if (count < 10) {
+        return { label: `Only ${count} left in stock`, className: "lowStock" };
+    }
+
+    return { label: `${count} in stock`, className: "" };
+}
+
+function renderProductGallery(product) {
+    const main = document.getElementById("productGalleryMain");
+    const thumbs = document.getElementById("productGalleryThumbs");
+
+    const images = product.images || [];
+
+    if (!images.length) {
+        main.classList.add("isEmpty");
+        main.innerHTML = '<img src="../../assets/icons/SellerCentre/Image.svg" alt="">';
+        thumbs.innerHTML = "";
+
+        return;
+    }
+
+    const name = escapeHtml(product.name);
+
+    function showImage(index) {
+        main.innerHTML = `<img src="${escapeHtml(images[index].url)}" alt="${name}">`;
+
+        thumbs.querySelectorAll(".productGalleryThumb").forEach((thumb, position) => {
+            thumb.classList.toggle("active", position === index);
+        });
+    }
+
+    // A single image has nothing to switch between, so it gets no thumbnails.
+    thumbs.innerHTML = images.length > 1
+        ? images
+            .map((image, index) => `
+                <button
+                    type="button"
+                    class="productGalleryThumb"
+                    data-image-index="${index}"
+                    aria-label="Show image ${index + 1}"
+                >
+                    <img src="${escapeHtml(image.url)}" alt="">
+                </button>
+            `)
+            .join("")
+        : "";
+
+    thumbs.querySelectorAll(".productGalleryThumb").forEach((thumb) => {
+        thumb.addEventListener("click", () => {
+            showImage(Number(thumb.dataset.imageIndex));
+        });
+    });
+
+    showImage(0);
+}
+
+function renderProductDetail(product) {
+    document.title = `${product.name} | UMKMify`;
+
+    const categoryPath = [product.category, product.subcategory]
+        .filter(Boolean)
+        .join(" · ");
+
+    document.getElementById("productDetailCategory").textContent = categoryPath;
+    document.getElementById("productDetailName").textContent = product.name;
+    document.getElementById("productDetailPrice").textContent = formatRupiah(product.price);
+
+    const stock = productDetailStock(product.stock);
+    const stockSlot = document.getElementById("productDetailStock");
+
+    stockSlot.textContent = stock.label;
+    stockSlot.className = `productDetailStock ${stock.className}`.trim();
+
+    document.getElementById("productDetailFacts").innerHTML = productDetailFacts(product)
+        .map(([label, value]) => `
+            <dt>${escapeHtml(label)}</dt>
+            <dd>${escapeHtml(value)}</dd>
+        `)
+        .join("");
+
+    const store = product.store || "UMKMify Seller";
+
+    document.getElementById("productDetailSellerInitial").textContent =
+        store.charAt(0).toUpperCase();
+
+    document.getElementById("productDetailSellerName").textContent = store;
+    document.getElementById("productDetailSellerLocation").textContent =
+        product.location || "Indonesia";
+
+    renderProductGallery(product);
+
+    /* textContent, not innerHTML: the description is whatever the seller
+       typed, and the CSS keeps its line breaks. */
+    const description = document.getElementById("productDescription");
+
+    if (product.description) {
+        document.getElementById("productDescriptionText").textContent = product.description;
+        description.hidden = false;
+    }
+
+    document.getElementById("productPageState").hidden = true;
+    document.getElementById("productDetail").hidden = false;
+}
+
+async function setupProductDetail() {
+    const detail = document.getElementById("productDetail");
+    const state = document.getElementById("productPageState");
+
+    if (!detail || !state) {
+        return;
+    }
+
+    const productId = new URLSearchParams(window.location.search).get("id");
+
+    if (!productId) {
+        state.textContent = "No product was selected.";
+        return;
+    }
+
+    let response;
+
+    try {
+        response = await fetch(`${API_BASE}/catalog/products/${productId}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Failed to load the product:", error);
+
+        state.textContent =
+            "Unable to reach the server. Please make sure Laravel is running.";
+
+        return;
+    }
+
+    // 404 also covers a product that was taken off sale, which is deliberate:
+    // a shopper has no business seeing an unlisted product either way.
+    if (response.status === 404) {
+        state.textContent = "This product is no longer available.";
+        return;
+    }
+
+    if (!response.ok) {
+        console.error("Failed to load the product:", response.status);
+
+        state.textContent = "Failed to load this product.";
+
+        return;
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!data.product) {
+        state.textContent = "Failed to load this product.";
+        return;
+    }
+
+    renderProductDetail(data.product);
+}
+
+
+/* ----------------------------------------------------------------------- */
+/* Latest Products                                                         */
+/* ----------------------------------------------------------------------- */
+
+/* The Latest Product section on the homepage. Open to signed out visitors,
+   so this calls the public catalogue endpoint and sends no token. */
+
+function latestProductCardMarkup(product) {
+    const name = escapeHtml(product.name);
+
+    /* Listing a photo is optional on Add New Product, so a card without one
+       falls back to the same icon the seller's drop zone uses. */
+    const image = product.image
+        ? `<img
+                src="${escapeHtml(product.image)}"
+                alt=""
+                class="latestProductCardImage"
+            >`
+        : `<span class="latestProductCardImage latestProductCardImageEmpty">
+                <img src="../../assets/icons/SellerCentre/Image.svg" alt="">
+            </span>`;
+
+    // Whichever of the two the seller filled in; both are optional columns.
+    const meta = product.store || product.location || "";
+
+    return `
+        <a href="product.html?id=${product.id}" class="latestProductCard">
+            ${image}
+
+            <div class="latestProductCardBody">
+                <h3 class="latestProductCardName" title="${name}">${name}</h3>
+
+                <p class="latestProductCardPrice">${formatRupiah(product.price)}</p>
+
+                ${meta ? `<p class="latestProductCardMeta">${escapeHtml(meta)}</p>` : ""}
+            </div>
+        </a>
+    `;
+}
+
+async function setupLatestProducts() {
+    const grid = document.getElementById("latestProductGrid");
+    const emptyState = document.getElementById("latestProductEmptyState");
+
+    if (!grid) {
+        return;
+    }
+
+    let response;
+
+    try {
+        response = await fetch(`${API_BASE}/catalog/products`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Failed to load the latest products:", error);
+
+        // The empty state is already on the page, so a failure just leaves
+        // the homepage looking the way it did before anything was listed.
+        return;
+    }
+
+    if (!response.ok) {
+        console.error("Failed to load the latest products:", response.status);
+        return;
+    }
+
+    const data = await response.json().catch(() => ({}));
+    const products = data.products || [];
+
+    if (!products.length) {
+        return;
+    }
+
+    grid.innerHTML = products.map(latestProductCardMarkup).join("");
+    grid.hidden = false;
+
+    if (emptyState) {
+        emptyState.hidden = true;
+    }
+}
+
+
+/* ----------------------------------------------------------------------- */
 /* Edit Product                                                            */
 /* ----------------------------------------------------------------------- */
 
@@ -1628,6 +1922,10 @@ setupNavbarAuthentication();
 setupSellerNavbarAuthentication();
 
 setupListProductButton();
+
+setupLatestProducts();
+
+setupProductDetail();
 
 setupProductList();
 
