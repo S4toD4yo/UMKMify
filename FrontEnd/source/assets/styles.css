@@ -1,4 +1,12 @@
  /* Fonts */
+/* Light */
+@font-face {
+    font-family: "Lexend";
+    src: url("../assets/fonts/Lexend-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}
+
 /* Regular */
 @font-face {
     font-family: "Lexend";
@@ -336,7 +344,7 @@ body {
     border: none;
     border-radius: 4px;
 
-    font-size: 14px;
+    font-size: 12px;
     font-family: "Lexend", sans-serif;
     font-weight: 500;
 
@@ -355,12 +363,12 @@ body {
 
 /* Sign Out */
 .profileDropdownItem.signOut {
-    color: #F7931E;
+    color: #FF3838;
 }
 
 .profileDropdownItem.signOut:hover {
-    background-color: #FFF0E0;
-    color: #F7931E;
+    background-color: #FAC8CD;
+    color: #FF3838;
 }
 
 /* Sign In Button */
@@ -1854,4 +1862,1026 @@ body {
 
 .registerSignInLink:hover {
     text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+/* Seller Centre */
+
+/* Seller Navbar */
+.sellerNavbar {
+    width: 100%;
+    padding: 44px 24px 24px;
+
+    display: flex;
+    
+    align-items: center;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.08);
+}
+
+/* Seller Navbar Back Button */
+.sellerNavbarBack {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    background-color: #f8f8ff;
+
+    border-radius: 50%;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+
+    transition:
+        background-color 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.sellerNavbarBack:active {
+    opacity: 0.5;
+}
+
+/* Back Icon */
+.sellerNavbarBackIcon {
+    width: 16px;
+    height: 16px;
+
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Seller Navbar Logo */
+.sellerNavbarLogoLink {
+    margin-left: 24px;
+
+    display: flex;
+    align-items: center;
+
+    text-decoration: none;
+}
+
+.sellerNavbarLogo {
+    height: 32px;
+    width: auto;
+
+    display: block;
+}
+
+/* Seller Navbar Title */
+.sellerNavbarTitle {
+    margin: 0 0 0 8px;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 300;
+    letter-spacing: 1.5%;
+}
+
+/* Seller Navbar Profile */
+.sellerNavbarAuth {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+}
+
+/* Seller Navbar Profile */
+.sellerProfileMenu {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.sellerProfileButton {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+
+    border: none;
+    border-radius: 50%;
+
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+
+    text-decoration: none;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition: opacity 0.15s ease;
+}
+
+.sellerProfileButton:active {
+    opacity: 0.5;
+}
+
+/* Seller Profile Dropdown */
+.sellerProfileDropdown {
+    position: absolute;
+
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 120px;
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(-4px);
+
+    transition:
+        opacity 0.15s ease,
+        visibility 0.15s ease,
+        transform 0.15s ease;
+
+    z-index: 1100;
+}
+
+.sellerProfileDropdown::before {
+    content: "";
+
+    position: absolute;
+
+    top: -12px;
+    left: 0;
+    right: 0;
+
+    height: 12px;
+}
+
+.sellerProfileMenu:hover .sellerProfileDropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: translateY(0);
+}
+
+/* Seller Sign Out */
+.sellerSignOutButton {
+    width: 100%;
+    padding: 10px 12px;
+
+    display: block;
+
+    box-sizing: border-box;
+
+    background-color: transparent;
+    color: #FF3838;
+
+    border: none;
+    border-radius: 4px;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.sellerSignOutButton:hover {
+    background-color: #FAC8CD;
+    color: #FF3838;
+}
+
+/* Seller Side Navbar */
+.sellerSideNavbar {
+
+    margin-top: 108px;
+    width: 256px;
+    height: 83vh;
+
+    padding: 44px 24px 24px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index: 900;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+/* Seller Side Navbar Menu */
+.sellerSideNavbarMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Seller Side Navbar Button */
+.sellerSideNavbarButton {
+    width: 100%;
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    border-radius: 4px;
+
+    color: #343434;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+/* Seller Side Navbar Icon */
+.sellerSideNavbarIcon {
+    width: 24px;
+    height: 24px;
+
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Seller Side Navbar Text */
+.sellerSideNavbarText {
+    margin: 0 0 0 16px;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+/* Seller Side Navbar Button Active */
+.sellerSideNavbarButton.active {
+    background-color: #00B9FB;
+    color: #F8F8FF;
+}
+
+.sellerSideNavbarButton.active .sellerSideNavbarText {
+    color: #F8F8FF;
+}
+
+.sellerSideNavbarButton.active .sellerSideNavbarIcon {
+    filter: brightness(0) invert(1);
+}
+
+/* Product Submenu */
+.sellerProductSubmenu {
+    margin-left: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Product Submenu Link */
+.sellerProductSubmenuLink {
+    display: flex;
+    align-items: center;
+
+    color: #343434;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    text-decoration: none;
+}
+
+.sellerProductSubmenuLink span {
+    flex-shrink: 0;
+}
+
+/* Product Submenu Link */
+.sellerProductSubmenuLink {
+    display: flex;
+    align-items: center;
+
+    color: #343434;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    text-decoration: none;
+}
+
+/* Product Submenu Link Active */
+.sellerProductSubmenuLink.active {
+    color: #00B9FB;
+    text-decoration: underline;
+}
+
+/* Seller Side Navbar Footer */
+.sellerSideNavbarFooter {
+    margin: auto 0 0;
+
+    color: #343434;
+    font-size: 8px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+    text-align: center;
+}
+
+.sellerContent {
+    margin-left: 256px;
+    padding: 132px 24px 24px;
+
+    box-sizing: border-box;
+}
+
+.sellerContentTitle {
+    margin: 0;
+
+    color: #343434;
+    font-family: "Lexend", sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: 1.5%;
+}
+
+.addProductContainers {
+    margin-top: 24px;
+
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.addProductContainer {
+    width: 100%;
+    padding: 24px 16px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+.addProductContainerTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+/* Add Product Form Field */
+.addProductFormField {
+
+    width: 256px;
+}
+
+/* Add Product Form Label */
+.addProductFormLabel {
+
+    display: block;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+/* Add Product Form Input */
+.addProductFormInput {
+    margin-top: 8px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: transparent;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    outline: none;
+}
+
+.addProductFormInput::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+.requiredMark {
+    color: #F7931E;
+}
+
+.addProductFormRow {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.addProductSkuField {
+    flex: 1;
+    width: auto;
+}
+
+.addProductSkuField .addProductFormInput {
+    width: 100%;
+}
+
+.addProductFormSelect {
+    margin-top: 8px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: #F8F8FF;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    outline: none;
+    cursor: pointer;
+}
+
+.addProductSubCategoryField {
+    flex: 1;
+    width: auto;
+}
+
+.addProductSubCategoryField .addProductFormSelect {
+    width: 100%;
+}
+
+/* Add Product Description */
+.addProductDescriptionField {
+    margin-top: 16px;
+    width: 100%;
+}
+
+.addProductFormTextarea {
+    margin-top: 8px;
+
+    width: 100%;
+    height: 128px;
+
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: transparent;
+
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+    line-height: 150%;
+
+    outline: none;
+    resize: vertical;
+}
+
+.addProductFormTextarea::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+/* Product Image Drop Zone */
+.productImageDropZone {
+    margin-top: 16px;
+    cursor: pointer;
+
+    width: 100%;
+    height: 193px;
+
+    box-sizing: border-box;
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px dashed #343434;
+    border-radius: 4px;
+
+    background-color: transparent;
+}
+
+.productImageDropZone.dragover {
+    border-color: #00B9FB;
+    background-color: #BAE8FE;
+}
+
+.productImageDropZoneContent {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.productImageDropZoneIcon {
+    width: 92px;
+    height: 92px;
+
+    object-fit: contain;
+}
+
+.productImageDropZoneText {
+    margin: 0;
+
+    color: #00B9FB;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.productImageDropZoneInfo {
+    margin: 8px 0 0;
+
+    color: #343434;
+    opacity: 50%;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    text-align: center;
+}
+
+.productImageCards {
+    margin-top: 16px;
+
+    display: flex;
+    gap: 8px;
+
+    width: 100%;
+}
+
+.productImageCard {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    border: 1px solid rgba(52, 52, 52, 0.25);
+    border-radius: 4px;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.productImageCardIcon {
+    width: 24px;
+    height: 24px;
+
+    object-fit: contain;
+}
+
+.productImageCardPreview {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.productImageCard {
+    cursor: pointer;
+}
+
+.productImageCard:hover {
+    border-color: #FF0000;
+}
+
+.productImageLimit {
+    margin: 16px 0 0;
+
+    color: #343434;
+    opacity: 50%;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    text-align: center;
+}
+
+.priceStockFormRow {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 16px;
+}
+
+.priceStockFormRow .addProductFormField {
+    flex: 1;
+    min-width: 0;
+}
+
+.priceInputWrapper {
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 40px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: #FFFFFF;
+}
+
+.priceCurrency {
+    padding-left: 12px;
+
+    color: #343434;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+
+    white-space: nowrap;
+}
+
+.priceInput {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+
+    padding: 0 12px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #343434;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+}
+
+.priceStockFormRow {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 16px;
+}
+
+.priceStockFormRow .addProductFormField {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Product Weight */
+.weightInputWrapper {
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 40px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    background-color: #FFFFFF;
+}
+
+.weightInput {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+
+    padding: 0 12px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #343434;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.weightInput::placeholder {
+    color: rgba(52, 52, 52, 0.5);
+    opacity: 1;
+}
+
+.weightUnit {
+    padding-right: 12px;
+
+    color: #343434;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+
+    white-space: nowrap;
+}
+
+.addProductFullWidthField {
+    width: 100%;
+}
+
+.addProductContainerTitle + .addProductFullWidthField {
+    margin-top: 16px;
+}
+
+.addProductFullWidthField + .addProductFullWidthField {
+    margin-top: 16px;
+}
+
+.shippingDimensionRow {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 16px;
+}
+
+.shippingDimensionField {
+    width: 100%;
+}
+
+.shippingFeeField {
+    width: 100%;
+
+    margin-top: 16px;
+}
+
+.productStatusButtons {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    width: 100%;
+}
+
+.productStatusButton {
+    flex: 1;
+
+    padding: 10px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+    color: #343434;
+
+    border: 1px solid #343434;
+    border-radius: 4px;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.productStatusButtonIcon {
+    width: 16px;
+    height: 16px;
+
+    display: block;
+    flex-shrink: 0;
+}
+
+.productStatusButton.active {
+    background-color: #3DCC3F;
+    color: #F8F8FF;
+    border-color: #3DCC3F;
+}
+
+.productStatusButton.nonActive {
+    background-color: #FF3838;
+    color: #F8F8FF;
+    border-color: #FF3838;
+}
+
+.productStatusButton.active .productStatusButtonIcon,
+.productStatusButton.nonActive .productStatusButtonIcon {
+    filter: brightness(0) invert(1);
+}
+
+/* Save & Publish Bar */
+.savePublishBar {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 16px;
+
+    padding: 24px;
+
+    box-sizing: border-box;
+
+    background-color: #FFFFFF;
+
+    box-shadow: 0 -2px 8px rgba(52, 52, 52, 0.15);
+}
+
+.savePublishCancelButton,
+.savePublishButton {
+    min-width: 160px;
+
+    padding: 10px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    border-radius: 4px;
+
+    font-family: "Lexend", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    letter-spacing: 1.5%;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+/* Cancel */
+.savePublishCancelButton {
+    background-color: transparent;
+
+    color: #343434;
+
+    border: 1px solid #343434;
+}
+
+.savePublishCancelButton:hover {
+    background-color: #FF3838;
+
+    color: #FFFFFF;
+
+    border-color: #FF3838;
+}
+
+/* Save & Publish */
+.savePublishButton {
+    background-color: #00B9FB;
+    color: #FFFFFF;
+    border: 1px solid #00B9FB;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.savePublishButton:hover {
+    background-color: #7CD8FD;
+}
+.sellerContent {
+    padding-bottom: 112px;
 }

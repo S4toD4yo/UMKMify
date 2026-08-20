@@ -2,22 +2,20 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
+     *
+     * The schema itself lives in umkmify.sql; this only fills in reference
+     * data the app cannot work without.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'username' => 'testuser',
-            'email' => 'test@example.com',
+        $this->call([
+            CategorySeeder::class,
         ]);
     }
 }

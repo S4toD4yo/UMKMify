@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add New | Seller Centre</title>
+
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../App.js" defer></script>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../assets/images/UMKMify Title Logo.png"
+    >
+</head>
+
+<body>
+
+    <!-- Seller Centre Navbar -->
+    <nav class="sellerNavbar">
+
+        <!-- Back Button -->
+        <a
+            href="../User/homePage.html"
+            class="sellerNavbarBack"
+            aria-label="Back to Dashboard"
+            title="Back to Dashboard"
+        >
+            <img
+                src="../../assets/icons/SellerCentre/ArrowLeft.svg"
+                alt=""
+                class="sellerNavbarBackIcon"
+            >
+        </a>
+
+        <!-- UMKMify Logo -->
+        <a
+            href="dashboard.html"
+            class="sellerNavbarLogoLink"
+        >
+            <img
+                src="../../assets/images/Logo - White Background.svg"
+                alt="UMKMify"
+                class="sellerNavbarLogo"
+            >
+        </a>
+
+        <!-- Seller Centre Title -->
+        <p class="sellerNavbarTitle">
+            Seller Centre
+        </p>
+
+        <!-- Profile -->
+        <div
+            class="sellerNavbarAuth"
+            id="sellerNavbarAuth"
+        >
+            <a
+                href="../User/login.html"
+                class="signInButton"
+                id="sellerSignInButton"
+            >
+                Sign In
+            </a>
+        </div>
+
+    </nav>
+
+
+    <!-- Seller Side Navbar -->
+    <aside class="sellerSideNavbar">
+
+        <nav class="sellerSideNavbarMenu">
+
+            <!-- Dashboard -->
+            <a
+                href="dashboard.html"
+                class="sellerSideNavbarButton"
+            >
+                <img
+                    src="../../assets/icons/SellerCentre/House.svg"
+                    alt=""
+                    class="sellerSideNavbarIcon"
+                >
+
+                <h3 class="sellerSideNavbarText">
+                    Dashboard
+                </h3>
+            </a>
+
+
+            <!-- Orders -->
+            <a
+                href="orders.html"
+                class="sellerSideNavbarButton"
+            >
+                <img
+                    src="../../assets/icons/SellerCentre/Notepad.svg"
+                    alt=""
+                    class="sellerSideNavbarIcon"
+                >
+
+                <h3 class="sellerSideNavbarText">
+                    Orders
+                </h3>
+            </a>
+
+
+            <!-- Products -->
+            <div class="sellerSideNavbarButton active">
+
+                <img
+                    src="../../assets/icons/SellerCentre/Package.svg"
+                    alt=""
+                    class="sellerSideNavbarIcon"
+                >
+
+                <h3 class="sellerSideNavbarText active">
+                    Products
+                </h3>
+
+            </div>
+
+
+            <!-- Product Submenu -->
+            <div class="sellerProductSubmenu">
+
+                <!-- Product List -->
+                <a
+                    href="productList.html"
+                    class="sellerProductSubmenuLink"
+                >
+                    <span>・</span>
+                    Product List
+                </a>
+
+                <!-- Add New Product -->
+                <a
+                    href="newProduct.html"
+                    class="sellerProductSubmenuLink active"
+                >
+                    <span>・</span>
+                    Add New Product
+                </a>
+
+            </div>
+
+        </nav>
+
+
+        <!-- Seller Side Navbar Footer -->
+        <p class="sellerSideNavbarFooter">
+            &copy; 2026 UMKMify. All rights reserved.
+        </p>
+
+    </aside>
+
+
+    <!-- Seller Content -->
+    <main class="sellerContent">
+
+        <!-- Page Title -->
+        <h1 class="sellerContentTitle">
+            Add New Product
+        </h1>
+
+
+        <!-- Add Product Containers -->
+        <div class="addProductContainers">
+
+
+            <!-- Product Information -->
+            <section class="addProductContainer">
+
+                <h3 class="addProductContainerTitle">
+                    Product Information
+                </h3>
+
+
+                <!-- Product Name + SKU -->
+                <div class="addProductFormRow">
+
+                    <!-- Product Name -->
+                    <div class="addProductFormField">
+
+                        <label
+                            for="productName"
+                            class="addProductFormLabel"
+                        >
+                            Product Name
+                            <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="productName"
+                            name="productName"
+                            class="addProductFormInput"
+                            placeholder="Enter product name"
+                        >
+
+                    </div>
+
+
+                    <!-- SKU -->
+                    <div class="addProductFormField addProductSkuField">
+
+                        <label
+                            for="productSku"
+                            class="addProductFormLabel"
+                        >
+                            SKU / Product Code
+                            <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="productSku"
+                            name="productSku"
+                            class="addProductFormInput"
+                            placeholder="Example: SNK-001"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Category + Sub Category -->
+                <div class="addProductFormRow">
+
+                    <!-- Category -->
+                    <div class="addProductFormField">
+
+                        <label
+                            for="productCategory"
+                            class="addProductFormLabel"
+                        >
+                            Category
+                            <span class="requiredMark">*</span>
+                        </label>
+
+                        <select
+                            id="productCategory"
+                            name="productCategory"
+                            class="addProductFormSelect"
+                        >
+                            <option
+                                value=""
+                                selected
+                                disabled
+                            >
+                                Select Category
+                            </option>
+
+                            <option value="1">
+                                Accessories
+                            </option>
+
+                            <option value="2">
+                                Beverage
+                            </option>
+
+                            <option value="3">
+                                Electronics
+                            </option>
+
+                            <option value="4">
+                                Fashion
+                            </option>
+
+                            <option value="5">
+                                Handcraft
+                            </option>
+
+                            <option value="6">
+                                Health
+                            </option>
+
+                            <option value="7">
+                                Hobbies
+                            </option>
+
+                            <option value="8">
+                                Food
+                            </option>
+
+                            <option value="9">
+                                Plants
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <!-- Sub Category -->
+                    <div class="addProductFormField addProductSubCategoryField">
+
+                        <label
+                            for="productSubCategory"
+                            class="addProductFormLabel"
+                        >
+                            Sub Category
+                            <span class="requiredMark"></span>
+                        </label>
+
+                        <select
+                            id="productSubCategory"
+                            name="productSubCategory"
+                            class="addProductFormSelect"
+                        >
+                            <option
+                                value=""
+                                selected
+                                disabled
+                            >
+                                Select
+                            </option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="addProductFormField addProductDescriptionField">
+                    <label
+                        for="productDescription"
+                        class="addProductFormLabel"
+                    >
+                        Description <span class="requiredMark">*</span>
+                    </label>
+
+                    <textarea
+                        id="productDescription"
+                        name="productDescription"
+                        class="addProductFormTextarea"
+                        placeholder="Describe your product"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+
+            <!-- Product Images -->
+            <section class="addProductContainer">
+
+                <h3 class="addProductContainerTitle">
+                    Product Images
+                </h3>
+
+                <!-- Product Image Drop Zone -->
+                <div class="productImageDropZone"  id="productImageDropZone">
+
+                    <input
+                        type="file"
+                        id="productImageInput"
+                        accept="image/png, image/jpeg"
+                        hidden
+                    >
+
+                    <img
+                        src="../../assets/icons/SellerCentre/CloudArrowUp.svg"
+                        alt=""
+                        class="productImageDropZoneIcon"
+                    >
+
+                    <p class="productImageDropZoneText">
+                        Upload Image
+                    </p>
+
+                    <p class="productImageDropZoneInfo">
+                        PNG, JPG, JPEG (Max 2MB)<br>
+                        For best results, use a square 1000 × 1000px
+                    </p>
+                </div>
+                
+                <!-- Review Image Apalah Itu -->
+                 <div class="productImageCards">
+                    <div
+                        class="productImageCard"
+                        data-image-index="0"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Image.svg"
+                            alt=""
+                            class="productImageCardIcon"
+                        >
+                    </div>
+
+                    <div
+                        class="productImageCard"
+                        data-image-index="1"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Image.svg"
+                            alt=""
+                            class="productImageCardIcon"
+                        >
+                    </div>
+
+                    <div
+                        class="productImageCard"
+                        data-image-index="2"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Image.svg"
+                            alt=""
+                            class="productImageCardIcon"
+                        >
+                    </div>
+
+                    <div
+                        class="productImageCard"
+                        data-image-index="3"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Image.svg"
+                            alt=""
+                            class="productImageCardIcon"
+                        >
+                    </div>
+
+                    <div
+                        class="productImageCard"
+                        data-image-index="4"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Image.svg"
+                            alt=""
+                            class="productImageCardIcon"
+                        >
+                    </div>
+                </div>
+
+                <p class="productImageLimit">
+                    Max 5 images
+                </p>
+            </section>
+
+
+            <!-- Price & Stock -->
+            <section class="addProductContainer">
+
+                <h3 class="addProductContainerTitle">
+                    Price & Stock
+                </h3>
+
+                <div class="priceStockFormRow">
+
+                    <!-- Selling Price -->
+                    <div class="addProductFormField">
+
+                        <label
+                            for="sellingPrice"
+                            class="addProductFormLabel"
+                        >
+                            Selling Price
+                            <span class="requiredMark">*</span>
+                        </label>
+
+                        <div class="priceInputWrapper">
+
+                            <span class="priceCurrency">
+                                Rp.
+                            </span>
+
+                            <input
+                                type="text"
+                                id="sellingPrice"
+                                name="sellingPrice"
+                                class="priceInput"
+                                value="0"
+                                inputmode="numeric"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- Minimum Purchase -->
+                    <div class="addProductFormField">
+
+                        <label
+                            for="minimumPurchase"
+                            class="addProductFormLabel"
+                        >
+                            Minimum Purchase
+                        </label>
+
+                        <input
+                            type="number"
+                            id="minimumPurchase"
+                            name="minimumPurchase"
+                            class="addProductFormInput"
+                            value="1"
+                            min="1"
+                        >
+
+                    </div>
+
+                    <!-- Stock -->
+                    <div class="addProductFormField">
+
+                        <label
+                            for="productStock"
+                            class="addProductFormLabel"
+                        >
+                            Stock
+                            <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            id="productStock"
+                            name="productStock"
+                            class="addProductFormInput"
+                            value="0"
+                            min="0"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="priceStockFormRow">
+
+                <!-- Product Weight -->
+                <div class="addProductFormField">
+
+                    <label
+                        for="productWeight"
+                        class="addProductFormLabel"
+                    >
+                        Product Weight (gram)
+                    </label>
+
+                    <div class="weightInputWrapper">
+
+                        <input
+                            type="number"
+                            id="productWeight"
+                            name="productWeight"
+                            class="weightInput"
+                            placeholder="Example: 250"
+                            min="0"
+                        >
+
+                        <span class="weightUnit">
+                            g
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- Unit of Item -->
+                <div class="addProductFormField">
+
+                    <label
+                        for="unitOfItem"
+                        class="addProductFormLabel"
+                    >
+                        Unit of Item
+                        <span class="requiredMark">*</span>
+                    </label>
+
+                    <select
+                        id="unitOfItem"
+                        name="unitOfItem"
+                        class="addProductFormSelect"
+                    >
+                        <option value="" selected disabled>
+                            Choose unit of item
+                        </option>
+
+                        <option value="pcs">
+                            Pcs
+                        </option>
+
+                        <option value="box">
+                            Box
+                        </option>
+
+                        <option value="pack">
+                            Pack
+                        </option>
+
+                        <option value="set">
+                            Set
+                        </option>
+
+                        <option value="bottle">
+                            Bottle
+                        </option>
+
+                        <option value="kg">
+                            Kg
+                        </option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            </section>
+
+
+            <!-- Additional Information -->
+            <section class="addProductContainer">
+
+                <h3 class="addProductContainerTitle">
+                    Additional Information
+                </h3>
+
+                <!-- Brand -->
+                <div class="addProductFormField addProductFullWidthField">
+
+                    <label
+                        for="productBrand"
+                        class="addProductFormLabel"
+                    >
+                        Brand
+                    </label>
+
+                    <input
+                        type="text"
+                        id="productBrand"
+                        name="productBrand"
+                        class="addProductFormInput"
+                        placeholder="Example: UMKM Lokal"
+                    >
+
+                </div>
+
+                <!-- Location -->
+                <div class="addProductFormField addProductFullWidthField">
+
+                    <label
+                        for="productLocation"
+                        class="addProductFormLabel"
+                    >
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="productLocation"
+                        name="productLocation"
+                        class="addProductFormInput"
+                        placeholder="Example: Jakarta Selatan"
+                    >
+
+                </div>
+
+            </section>
+
+
+            <!-- Shipping -->
+            <section class="addProductContainer">
+
+                <h3 class="addProductContainerTitle">
+                    Shipping
+                </h3>
+
+                <!-- Package Dimensions -->
+                <div class="shippingDimensionRow">
+
+                    <!-- Long -->
+                    <div class="shippingDimensionField">
+
+                        <label
+                            for="productLength"
+                            class="addProductFormLabel"
+                        >
+                            Long (cm)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="productLength"
+                            name="productLength"
+                            class="addProductFormInput"
+                            placeholder="Example: 20"
+                            min="0"
+                            step="0.01"
+                        >
+
+                    </div>
+
+                    <!-- Width -->
+                    <div class="shippingDimensionField">
+
+                        <label
+                            for="productWidth"
+                            class="addProductFormLabel"
+                        >
+                            Width (cm)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="productWidth"
+                            name="productWidth"
+                            class="addProductFormInput"
+                            placeholder="Example: 15"
+                            min="0"
+                            step="0.01"
+                        >
+
+                    </div>
+
+                    <!-- Height -->
+                    <div class="shippingDimensionField">
+
+                        <label
+                            for="productHeight"
+                            class="addProductFormLabel"
+                        >
+                            Height (cm)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="productHeight"
+                            name="productHeight"
+                            class="addProductFormInput"
+                            placeholder="Example: 10"
+                            min="0"
+                            step="0.01"
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- Shipping Fee -->
+                <div class="shippingFeeField">
+
+                    <label
+                        for="shippingFee"
+                        class="addProductFormLabel"
+                    >
+                        Shipping Fee
+                        <span class="requiredMark">*</span>
+                    </label>
+
+                    <select
+                        id="shippingFee"
+                        name="shippingFee"
+                        class="addProductFormSelect"
+                    >
+                        <option value="" selected disabled>
+                            Choose shipping fee
+                        </option>
+
+                        <option value="buyer">
+                            Borne by buyer
+                        </option>
+
+                        <option value="seller">
+                            Borne by seller
+                        </option>
+                    </select>
+
+                </div>
+
+            </section>
+
+
+            <!-- Product Status -->
+            <section class="addProductContainer">
+
+                <h3 class="addProductContainerTitle">
+                    Product Status
+                </h3>
+
+                <div class="productStatusButtons">
+
+                    <!-- Active and Nonactive -->
+                    <button
+                        type="button"
+                        class="productStatusButton"
+                        data-status="active"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Active.svg"
+                            alt=""
+                            class="productStatusButtonIcon"
+                        >
+
+                        <span class="productStatusButtonText">
+                            Active
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="productStatusButton"
+                        data-status="nonactive"
+                    >
+                        <img
+                            src="../../assets/icons/SellerCentre/Nonactive.svg"
+                            alt=""
+                            class="productStatusButtonIcon"
+                        >
+
+                        <span class="productStatusButtonText">
+                            Nonactive
+                        </span>
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Save & Publish Bar -->
+    <div class="savePublishBar">
+
+        <a
+            type="button"
+            class="savePublishCancelButton"
+            href="productList.html"
+        >
+            Cancel
+        </a>
+
+        <button
+            type="button"
+            class="savePublishButton"
+        >
+            Save & Publish
+        </button>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard | Seller Centre</title>
+        <link rel="stylesheet" href="../../assets/styles.css">
+        <script src="../../App.js" defer></script>
+        <link rel="icon" type="image/png" href="../../assets/images/UMKMify Title Logo.png">
+    </head>
+<body>
+
+    <!-- Seller Centre Navbar -->
+    <nav class="sellerNavbar">
+
+        <!-- Back Button -->
+        <a
+            href="../User/homePage.html"
+            class="sellerNavbarBack"
+            aria-label="Back to Dashboard"
+            title="Back to Dashboard"
+        >
+            <img
+                src="../../assets/icons/SellerCentre/ArrowLeft.svg"
+                alt=""
+                class="sellerNavbarBackIcon"
+            >
+        </a>
+
+        <a href="dashboard.html" class="sellerNavbarLogoLink">
+            <img
+                src="../../assets/images/Logo - White Background.svg"
+                alt="UMKMify"
+                class="sellerNavbarLogo"
+            >
+        </a>
+
+        <p class="sellerNavbarTitle">
+            Seller Centre
+        </p>
+
+        <!-- Profile -->
+        <div class="sellerNavbarAuth" id="sellerNavbarAuth">
+            <a
+                href="../User/login.html"
+                class="signInButton"
+                id="sellerSignInButton"
+            >
+                Sign In
+            </a>
+        </div>
+    </nav>
+
+    <!-- Seller Side Navbar -->
+    <aside class="sellerSideNavbar">
+
+        <nav class="sellerSideNavbarMenu">
+
+            <a href="dashboard.html" class="sellerSideNavbarButton active">
+                <img
+                    src="../../assets/icons/SellerCentre/House.svg"
+                    alt=""
+                    class="sellerSideNavbarIcon active"
+                >
+
+                <h3 class="sellerSideNavbarText">
+                    Dashboard
+                </h3>
+            </a>
+
+            <a href="orders.html" class="sellerSideNavbarButton" >
+                <img
+                    src="../../assets/icons/SellerCentre/Notepad.svg"
+                    alt=""
+                    class="sellerSideNavbarIcon"
+                >
+
+                <h3 class="sellerSideNavbarText">
+                    Orders
+                </h3>
+            </a>
+
+            <div class="sellerSideNavbarButton">
+                <img
+                    src="../../assets/icons/SellerCentre/Package.svg"
+                    alt=""
+                    class="sellerSideNavbarIcon"
+                >
+
+                <h3 class="sellerSideNavbarText">
+                    Products
+                </h3>
+            </div>
+
+            <!-- Product Submenu -->
+            <div class="sellerProductSubmenu">
+
+                <a href="productList.html" class="sellerProductSubmenuLink">
+                    <span>・</span>
+                    Product List
+                </a>
+
+                <a href="newProduct.html" class="sellerProductSubmenuLink">
+                    <span>・</span>
+                    Add New Product
+                </a>
+
+            </div>
+        </nav>
+        
+        <!-- Footer -->
+        <p class="sellerSideNavbarFooter">
+            &copy; 2026 UMKMify. All rights reserved.
+        </p>
+
+    </aside>
+    
+</body>
+</html>
