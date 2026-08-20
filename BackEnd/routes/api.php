@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,11 @@ Route::get('/catalog/products', [CatalogController::class, 'index']);
 Route::get('/catalog/products/{product}', [CatalogController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Checkout: only a signed in shopper has addresses or can place an order.
+    Route::get('/checkout', [CheckoutController::class, 'show']);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+
     Route::get('/products', [ProductController::class, 'index']);
     Route::post('/products', [ProductController::class, 'store']);
 

@@ -1058,6 +1058,668 @@ function setupSavePublish() {
 }
 
 /* ----------------------------------------------------------------------- */
+/* Purchases                                                               */
+/* ----------------------------------------------------------------------- */
+
+/* purchases.html — the shopper's own order history. Signed in only: the API
+   scopes orders to whoever placed them. */
+
+/* Schema.md's fulfillment lifecycle, in the order it runs. `null` is the
+   "everything" tab. */
+const PURCHASE_TABS = [
+    { status: null, label: "All", key: "total" },
+    { status: "pending", label: "Pending", key: "pending" },
+    { status: "processing", label: "Processing", key: "processing" },
+    { status: "shipped", label: "Shipped", key: "shipped" },
+    { status: "completed", label: "Completed", key: "completed" },
+    { status: "cancelled", label: "Cancelled", key: "cancelled" },
+];
+
+// "20 Aug 2026, 19:04" — an order needs the time as well as the day.
+function formatOrderDate(value) {
+    if (!value) {
+        return "-";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "-";
+    }
+
+    return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    }) + ", " + date.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
+// "pending" -> "Pending", for the badge.
+function titleCase(value) {
+    const text = String(value || "");
+
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function purchaseItemMarkup(item) {
+    const name = escapeHtml(item.name);
+
+    const image = item.image
+        ? `<span class="purchaseItemImage"><img src="${escapeHtml(item.image)}" alt=""></span>`
+        : `<span class="purchaseItemImage isEmpty"><img src="../../assets/icons/SellerCentre/Image.svg" alt=""></span>`;
+
+    const meta = [
+        item.sku,
+        `${item.quantity} × ${formatRupiah(item.unit_price)}`,
+    ].filter(Boolean).join(" · ");
+
+    const body = `
+        ${image}
+
+        <span class="purchaseItemText">
+            <p class="purchaseItemName">${name}</p>
+            <p class="purchaseItemMeta">${escapeHtml(meta)}</p>
+        </span>
+
+        <p class="purchaseItemSubtotal">${formatRupiah(item.subtotal)}</p>
+    `;
+
+    /* Only a product still on sale gets a link. Delisted ones stay on the
+       receipt but lead nowhere, because the product page would 404. */
+    return item.still_listed
+        ? `<a href="product.html?id=${item.product_id}" class="purchaseItem">${body}</a>`
+        : `<div class="purchaseItem">${body}</div>`;
+}
+
+function purchaseCardMarkup(order) {
+    const stores = (order.stores || [])
+        .map((store) => {
+            const meta = [store.shipping_method, titleCase(store.status)]
+                .filter(Boolean)
+                .join(" · ");
+
+            return `
+                <div class="purchaseStore">
+                    <p class="purchaseStoreName">${escapeHtml(store.store || "UMKMify Seller")}</p>
+                    <p class="purchaseStoreMeta">${escapeHtml(meta)}</p>
+
+                    ${(store.items || []).map(purchaseItemMarkup).join("")}
+                </div>
+            `;
+        })
+        .join("");
+
+    const payment = order.payment;
+
+    const paymentBadge = payment
+        ? `<span class="purchaseBadge ${escapeHtml(payment.status)}">${escapeHtml(
+            `${payment.method || "Payment"} · ${titleCase(payment.status)}`
+        )}</span>`
+        : "";
+
+    const shipping = order.shipping || {};
+
+    const shipTo = [
+        shipping.recipient_name,
+        shipping.address,
+        shipping.city,
+        shipping.province,
+        shipping.postal_code,
+    ].filter(Boolean).join(", ");
+
+    return `
+        <article class="purchaseCard">
+
+            <div class="purchaseCardHeader">
+                <p class="purchaseCardNumber">${escapeHtml(order.order_number)}</p>
+                <p class="purchaseCardDate">${escapeHtml(formatOrderDate(order.placed_at))}</p>
+
+                ${paymentBadge}
+
+                <span class="purchaseBadge ${escapeHtml(order.status)}">${escapeHtml(titleCase(order.status))}</span>
+            </div>
+
+            ${stores}
+
+            <div class="purchaseCardFooter">
+                <p class="purchaseCardShipping">${escapeHtml(shipTo)}</p>
+
+                <p class="purchaseCardTotalLabel">Total</p>
+                <p class="purchaseCardTotal">${formatRupiah(order.total_amount)}</p>
+            </div>
+
+        </article>
+    `;
+}
+
+function setupPurchases() {
+    const list = document.getElementById("purchasesList");
+    const state = document.getElementById("purchasesState");
+    const tabs = document.getElementById("purchasesTabs");
+
+    if (!list || !state) {
+        return;
+    }
+
+    let activeStatus = null;
+
+    function showState(message) {
+        list.innerHTML = "";
+
+        state.hidden = false;
+        state.textContent = message;
+    }
+
+    /* Counts come from the whole history, not from the filtered rows, so a
+       tab keeps saying what is behind it while another one is open. */
+    function renderTabs(summary) {
+        if (!tabs) {
+            return;
+        }
+
+        tabs.innerHTML = PURCHASE_TABS
+            .map((tab) => `
+                <button
+                    type="button"
+                    class="purchasesTab${tab.status === activeStatus ? " active" : ""}"
+                    data-status="${tab.status ?? ""}"
+                >
+                    ${escapeHtml(tab.label)} (${summary[tab.key] ?? 0})
+                </button>
+            `)
+            .join("");
+
+        tabs.querySelectorAll(".purchasesTab").forEach((button) => {
+            button.addEventListener("click", () => {
+                activeStatus = button.dataset.status || null;
+                loadOrders();
+            });
+        });
+    }
+
+    async function loadOrders() {
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        showState("Loading your purchases...");
+
+        const query = activeStatus ? `?status=${encodeURIComponent(activeStatus)}` : "";
+
+        let response;
+
+        try {
+            response = await fetch(`${API_BASE}/orders${query}`, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error("Failed to load purchases:", error);
+
+            showState("Unable to reach the server. Please make sure Laravel is running.");
+
+            return;
+        }
+
+        if (response.status === 401) {
+            tokenStore.clear();
+            window.location.href = "login.html";
+            return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            console.error("Failed to load purchases:", data);
+
+            showState(data.message || "Failed to load your purchases.");
+
+            return;
+        }
+
+        renderTabs(data.summary || {});
+
+        const orders = data.orders || [];
+
+        if (!orders.length) {
+            showState(
+                activeStatus
+                    ? "No orders in this status yet."
+                    : "You have not bought anything yet."
+            );
+
+            return;
+        }
+
+        state.hidden = true;
+        list.innerHTML = orders.map(purchaseCardMarkup).join("");
+    }
+
+    loadOrders();
+}
+
+
+/* ----------------------------------------------------------------------- */
+/* Checkout                                                                */
+/* ----------------------------------------------------------------------- */
+
+/* checkout.html, reached from Buy it now. Signed in only: it reads the
+   shopper's saved addresses and writes an order against their account.
+
+   Nothing here posts a price. The page shows what things cost, but the API
+   recomputes every number from the database when the order is placed —
+   a total in a request body is a total the shopper can edit. */
+
+/* The choice the page is currently holding, read back when Place Order is
+   pressed. */
+const checkoutSelection = {
+    productId: null,
+    quantity: 1,
+    shippingMethodId: null,
+    paymentMethodId: null,
+    addressId: null,
+};
+
+function checkoutOptionMarkup(name, option, meta, checked) {
+    return `
+        <label class="checkoutOption${checked ? " selected" : ""}">
+            <input
+                type="radio"
+                name="${name}"
+                value="${option.id}"
+                ${checked ? "checked" : ""}
+            >
+
+            <span class="checkoutOptionText">
+                <span class="checkoutOptionName">${escapeHtml(option.name)}</span>
+                ${meta ? `<span class="checkoutOptionMeta">${escapeHtml(meta)}</span>` : ""}
+            </span>
+        </label>
+    `;
+}
+
+/* The radios are real inputs so the keyboard works; the class only carries
+   the selected look. */
+function bindCheckoutOptions(container, onChange) {
+    container.querySelectorAll("input[type=radio]").forEach((radio) => {
+        radio.addEventListener("change", () => {
+            container.querySelectorAll(".checkoutOption").forEach((option) => {
+                option.classList.toggle(
+                    "selected",
+                    option.contains(radio) && radio.checked
+                );
+            });
+
+            onChange(Number(radio.value));
+        });
+    });
+}
+
+function renderCheckoutItem(item) {
+    const slot = document.getElementById("checkoutItem");
+
+    if (!slot) {
+        return;
+    }
+
+    const image = item.image
+        ? `<span class="checkoutItemImage"><img src="${escapeHtml(item.image)}" alt=""></span>`
+        : `<span class="checkoutItemImage isEmpty"><img src="../../assets/icons/SellerCentre/Image.svg" alt=""></span>`;
+
+    const meta = [
+        item.store,
+        `${item.quantity} ${item.unit || ""} × ${formatRupiah(item.price)}`.trim(),
+    ].filter(Boolean).join(" · ");
+
+    slot.innerHTML = `
+        ${image}
+
+        <span class="checkoutItemText">
+            <p class="checkoutItemName">${escapeHtml(item.name)}</p>
+            <p class="checkoutItemMeta">${escapeHtml(meta)}</p>
+            <p class="checkoutItemSubtotal">${formatRupiah(item.subtotal)}</p>
+        </span>
+    `;
+}
+
+/* Recomputed on the page purely so the shopper can see the courier they
+   picked change the total. The order's real total is worked out server side. */
+function renderCheckoutSummary(data) {
+    const summary = document.getElementById("checkoutSummary");
+
+    if (!summary) {
+        return;
+    }
+
+    const shipping = (data.shipping_methods || [])
+        .find((method) => method.id === checkoutSelection.shippingMethodId);
+
+    const subtotal = Number(data.item.price) * checkoutSelection.quantity;
+    const shippingFee = Number(shipping ? shipping.fee : 0);
+    const discount = Number(data.discount_amount) || 0;
+    const serviceFee = Number(data.service_fee) || 0;
+
+    const rows = [
+        ["Subtotal", formatRupiah(subtotal)],
+        ["Shipping Fee", formatRupiah(shippingFee)],
+        ["Service Fee", formatRupiah(serviceFee)],
+    ];
+
+    if (discount > 0) {
+        rows.splice(1, 0, ["Discount", "- " + formatRupiah(discount)]);
+    }
+
+    summary.innerHTML = rows
+        .map(([label, value]) => `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`)
+        .join("") + `
+            <dt class="checkoutSummaryTotal">Total</dt>
+            <dd class="checkoutSummaryTotal">${formatRupiah(
+                subtotal - discount + shippingFee + serviceFee
+            )}</dd>
+        `;
+}
+
+/* The saved address picker, plus the form it hides and shows. "Use a new
+   address" is always an option, because a shopper's first order has nothing
+   to pick from. */
+function renderCheckoutAddresses(addresses) {
+    const field = document.getElementById("checkoutSavedAddressField");
+    const select = document.getElementById("checkoutSavedAddress");
+    const form = document.getElementById("checkoutAddressForm");
+
+    if (!field || !select || !form) {
+        return;
+    }
+
+    if (!addresses.length) {
+        checkoutSelection.addressId = null;
+        return;
+    }
+
+    select.innerHTML = addresses
+        .map((address) => `
+            <option value="${address.id}">
+                ${escapeHtml(`${address.label} — ${address.recipient_name}, ${address.address_line}, ${address.city}`)}
+            </option>
+        `)
+        .join("") + '<option value="">Use a new address</option>';
+
+    // The API sorts the default one first.
+    checkoutSelection.addressId = addresses[0].id;
+
+    field.hidden = false;
+    form.hidden = true;
+
+    select.addEventListener("change", () => {
+        checkoutSelection.addressId = select.value ? Number(select.value) : null;
+
+        form.hidden = checkoutSelection.addressId !== null;
+    });
+}
+
+function readCheckoutAddressForm() {
+    const value = (id) => document.getElementById(id).value.trim();
+
+    return {
+        recipient_name: value("checkoutRecipientName"),
+        phone: value("checkoutPhone"),
+        address_line: value("checkoutAddressLine"),
+        address_line_2: value("checkoutAddressLine2"),
+        province: value("checkoutProvince"),
+        city: value("checkoutCity"),
+        postal_code: value("checkoutPostalCode"),
+    };
+}
+
+function showCheckoutState(message) {
+    const state = document.getElementById("checkoutPageState");
+
+    document.querySelectorAll(".checkoutSection").forEach((section) => {
+        section.hidden = true;
+    });
+
+    if (state) {
+        state.hidden = false;
+        state.textContent = message;
+    }
+}
+
+async function setupCheckout() {
+    const state = document.getElementById("checkoutPageState");
+
+    if (!state) {
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("product");
+
+    if (!productId) {
+        showCheckoutState("No product was selected.");
+        return;
+    }
+
+    const token = tokenStore.get();
+
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const quantity = params.get("qty") || "";
+
+    let response;
+
+    try {
+        response = await fetch(
+            `${API_BASE}/checkout?product_id=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(quantity)}`,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+    } catch (error) {
+        console.error("Failed to load the checkout:", error);
+
+        showCheckoutState(
+            "Unable to reach the server. Please make sure Laravel is running."
+        );
+
+        return;
+    }
+
+    if (response.status === 401) {
+        tokenStore.clear();
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (response.status === 404) {
+        showCheckoutState("This product is no longer available.");
+        return;
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || !data.item) {
+        console.error("Failed to load the checkout:", data);
+
+        showCheckoutState(data.message || "Failed to load the checkout.");
+
+        return;
+    }
+
+    if (!data.item.quantity) {
+        showCheckoutState("This product is out of stock.");
+        return;
+    }
+
+    checkoutSelection.productId = data.item.product_id;
+    checkoutSelection.quantity = data.item.quantity;
+
+    const shippingMethods = data.shipping_methods || [];
+    const paymentMethods = data.payment_methods || [];
+
+    // Preselected so the summary has a total to show on arrival.
+    checkoutSelection.shippingMethodId = shippingMethods.length ? shippingMethods[0].id : null;
+    checkoutSelection.paymentMethodId = paymentMethods.length ? paymentMethods[0].id : null;
+
+    renderCheckoutAddresses(data.addresses || []);
+    renderCheckoutItem(data.item);
+
+    const shippingSlot = document.getElementById("checkoutShippingOptions");
+    const paymentSlot = document.getElementById("checkoutPaymentOptions");
+
+    if (shippingSlot) {
+        shippingSlot.innerHTML = shippingMethods
+            .map((method, index) => checkoutOptionMarkup(
+                "checkoutShipping",
+                method,
+                formatRupiah(method.fee),
+                index === 0
+            ))
+            .join("");
+
+        bindCheckoutOptions(shippingSlot, (id) => {
+            checkoutSelection.shippingMethodId = id;
+            renderCheckoutSummary(data);
+        });
+    }
+
+    if (paymentSlot) {
+        paymentSlot.innerHTML = paymentMethods
+            .map((method, index) => checkoutOptionMarkup(
+                "checkoutPayment",
+                method,
+                method.type,
+                index === 0
+            ))
+            .join("");
+
+        bindCheckoutOptions(paymentSlot, (id) => {
+            checkoutSelection.paymentMethodId = id;
+        });
+    }
+
+    renderCheckoutSummary(data);
+
+    state.hidden = true;
+
+    document.querySelectorAll(".checkoutSection").forEach((section) => {
+        section.hidden = false;
+    });
+
+    setupPlaceOrder(data);
+}
+
+function setupPlaceOrder(data) {
+    const button = document.getElementById("checkoutPlaceOrder");
+    const errorSlot = document.getElementById("checkoutError");
+
+    if (!button) {
+        return;
+    }
+
+    button.addEventListener("click", async () => {
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (errorSlot) {
+            errorSlot.textContent = "";
+        }
+
+        const payload = {
+            product_id: checkoutSelection.productId,
+            quantity: checkoutSelection.quantity,
+            shipping_method_id: checkoutSelection.shippingMethodId,
+            payment_method_id: checkoutSelection.paymentMethodId,
+        };
+
+        if (checkoutSelection.addressId) {
+            payload.address_id = checkoutSelection.addressId;
+        } else {
+            Object.assign(payload, readCheckoutAddressForm());
+        }
+
+        button.disabled = true;
+        button.textContent = "Placing Order...";
+
+        try {
+            const response = await fetch(`${API_BASE}/orders`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (response.status === 401) {
+                tokenStore.clear();
+                window.location.href = "login.html";
+                return;
+            }
+
+            if (!response.ok) {
+                console.error("Failed to place the order:", result);
+
+                /* Stock can run out between opening the page and pressing
+                   the button, so these are shown on the page rather than
+                   swallowed. */
+                if (errorSlot) {
+                    errorSlot.textContent = validationMessage(
+                        result,
+                        "Failed to place your order."
+                    );
+                } else {
+                    alert(validationMessage(result, "Failed to place your order."));
+                }
+
+                return;
+            }
+
+            alert(
+                `Order placed successfully!\nOrder number: ${result.order.order_number}`
+            );
+
+            window.location.href = "purchases.html";
+
+        } catch (error) {
+            console.error("Failed to connect to Laravel API:", error);
+
+            if (errorSlot) {
+                errorSlot.textContent =
+                    "Unable to connect to the server. Please make sure Laravel is running.";
+            }
+
+        } finally {
+            button.disabled = false;
+            button.textContent = "Place Order";
+        }
+    });
+}
+
+
+/* ----------------------------------------------------------------------- */
 /* Product Page                                                            */
 /* ----------------------------------------------------------------------- */
 
@@ -1207,23 +1869,43 @@ function setupProductQuantity(product) {
     render();
 }
 
-/* The cart has no table in umkmify.sql yet, so both actions go where the
-   rest of the unbuilt features go. */
-function setupProductPurchaseActions() {
-    [
-        document.querySelector(".productAddToCartButton"),
-        document.querySelector(".productBuyNowButton"),
-    ]
-        .filter(Boolean)
-        .forEach((button) => {
-            button.addEventListener("click", () => {
-                if (button.disabled) {
-                    return;
-                }
+/* Buy it now goes straight to the checkout with what the shopper picked.
+   Add to Cart still cannot: umkmify.sql has orders but no cart table, so
+   there is nowhere to put a held item. */
+function setupProductPurchaseActions(product) {
+    const addToCart = document.querySelector(".productAddToCartButton");
+    const buyNow = document.querySelector(".productBuyNowButton");
 
-                window.location.href = "../Error/comingSoon.html";
-            });
+    if (addToCart) {
+        addToCart.addEventListener("click", () => {
+            if (addToCart.disabled) {
+                return;
+            }
+
+            window.location.href = "../Error/comingSoon.html";
         });
+    }
+
+    if (buyNow) {
+        buyNow.addEventListener("click", () => {
+            if (buyNow.disabled) {
+                return;
+            }
+
+            /* Checkout needs a signed in shopper — it reads their saved
+               addresses and writes an order against their account. */
+            if (!tokenStore.get()) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const quantity =
+                document.querySelector(".productQuantityValue")?.textContent.trim() || "1";
+
+            window.location.href =
+                `checkout.html?product=${product.id}&qty=${encodeURIComponent(quantity)}`;
+        });
+    }
 }
 
 function renderProductDetail(product) {
@@ -1248,7 +1930,7 @@ function renderProductDetail(product) {
 
     renderProductGallery(product);
     setupProductQuantity(product);
-    setupProductPurchaseActions();
+    setupProductPurchaseActions(product);
 }
 
 /* Loading and error both replace the detail block, so the page never sits
@@ -1983,6 +2665,10 @@ setupListProductButton();
 setupLatestProducts();
 
 setupProductDetail();
+
+setupCheckout();
+
+setupPurchases();
 
 setupProductList();
 

@@ -1,14 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>UMKMify | Checkout</title>
-        <link rel="stylesheet" href="../../assets/styles.css">
-        <script src="../../App.js" defer></script>
-        <link rel="icon" type="image/png" href="../../assets/images/UMKMify Title Logo.png">
-    </head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UMKMify | Checkout</title>
+
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <script src="../../App.js" defer></script>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../assets/images/UMKMify Title Logo.png"
+    >
+</head>
+
 <body>
-    
+
+    <!-- Checkout Navbar -->
+    <nav class="sellerNavbar">
+
+        <!-- Back Button -->
+        <a
+            href="../User/homePage.html"
+            class="sellerNavbarBack"
+            aria-label="Back to Dashboard"
+            title="Back to Dashboard"
+        >
+            <img
+                src="../../assets/icons/SellerCentre/ArrowLeft.svg"
+                alt=""
+                class="sellerNavbarBackIcon"
+            >
+        </a>
+
+        <!-- Logo -->
+        <a
+            href="../User/homePage.html"
+            class="sellerNavbarLogoLink"
+        >
+            <img
+                src="../../assets/images/Logo - White Background.svg"
+                alt="UMKMify"
+                class="sellerNavbarLogo"
+            >
+        </a>
+
+        <!-- Page Title -->
+        <p class="sellerNavbarTitle">
+            Checkout
+        </p>
+
+    </nav>
+
+
+    <!-- Checkout Content -->
+    <!-- Every field below is filled by setupCheckout() in App.js from
+         GET /api/checkout -->
+    <main class="checkoutPage">
+
+        <p class="checkoutPageState" id="checkoutPageState">
+            Loading checkout...
+        </p>
+
+        <!-- Shipping Address -->
+        <section class="checkoutSection checkoutShippingAddress" hidden>
+
+            <h2 class="checkoutSectionTitle">
+                Shipping Address
+            </h2>
+
+            <!-- Only shown once the shopper has an address saved -->
+            <div class="checkoutField" id="checkoutSavedAddressField" hidden>
+
+                <label class="checkoutLabel" for="checkoutSavedAddress">
+                    Saved Address
+                </label>
+
+                <select class="checkoutSelect" id="checkoutSavedAddress"></select>
+
+            </div>
+
+            <div class="checkoutAddressForm" id="checkoutAddressForm">
+
+                <div class="checkoutFieldRow">
+
+                    <div class="checkoutField">
+                        <label class="checkoutLabel" for="checkoutRecipientName">
+                            Recipient Name <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="checkoutRecipientName"
+                            class="checkoutInput"
+                            placeholder="Nama penerima"
+                        >
+                    </div>
+
+                    <div class="checkoutField">
+                        <label class="checkoutLabel" for="checkoutPhone">
+                            Phone <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="checkoutPhone"
+                            class="checkoutInput"
+                            placeholder="08xxxxxxxxxx"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="checkoutField">
+                    <label class="checkoutLabel" for="checkoutAddressLine">
+                        Address <span class="requiredMark">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="checkoutAddressLine"
+                        class="checkoutInput"
+                        placeholder="Jalan, nomor rumah"
+                    >
+                </div>
+
+                <div class="checkoutField">
+                    <label class="checkoutLabel" for="checkoutAddressLine2">
+                        Address Detail
+                    </label>
+
+                    <input
+                        type="text"
+                        id="checkoutAddressLine2"
+                        class="checkoutInput"
+                        placeholder="Patokan, blok, nomor unit"
+                    >
+                </div>
+
+                <div class="checkoutFieldRow">
+
+                    <div class="checkoutField">
+                        <label class="checkoutLabel" for="checkoutProvince">
+                            Province <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="checkoutProvince"
+                            class="checkoutInput"
+                            placeholder="Jawa Timur"
+                        >
+                    </div>
+
+                    <div class="checkoutField">
+                        <label class="checkoutLabel" for="checkoutCity">
+                            City <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="checkoutCity"
+                            class="checkoutInput"
+                            placeholder="Ngawi"
+                        >
+                    </div>
+
+                    <div class="checkoutField">
+                        <label class="checkoutLabel" for="checkoutPostalCode">
+                            Postal Code <span class="requiredMark">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="checkoutPostalCode"
+                            class="checkoutInput"
+                            placeholder="63211"
+                        >
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Product Details -->
+        <section class="checkoutSection checkoutProductDetails" hidden>
+
+            <h2 class="checkoutSectionTitle">
+                Detail Produk
+            </h2>
+
+            <div class="checkoutItem" id="checkoutItem"></div>
+
+        </section>
+
+
+        <!-- Shipping Methods -->
+        <section class="checkoutSection checkoutShippingMethods" hidden>
+
+            <h2 class="checkoutSectionTitle">
+                Shipping Methods
+            </h2>
+
+            <div class="checkoutOptions" id="checkoutShippingOptions"></div>
+
+        </section>
+
+
+        <!-- Payment Methods -->
+        <section class="checkoutSection checkoutPaymentMethods" hidden>
+
+            <h2 class="checkoutSectionTitle">
+                Payment Methods
+            </h2>
+
+            <div class="checkoutOptions" id="checkoutPaymentOptions"></div>
+
+        </section>
+
+
+        <!-- Payment Details -->
+        <section class="checkoutSection checkoutPaymentDetails" hidden>
+
+            <h2 class="checkoutSectionTitle">
+                Payment Details
+            </h2>
+
+            <dl class="checkoutSummary" id="checkoutSummary"></dl>
+
+            <p class="checkoutError" id="checkoutError"></p>
+
+            <button
+                type="button"
+                class="checkoutPlaceOrderButton"
+                id="checkoutPlaceOrder"
+            >
+                Place Order
+            </button>
+
+        </section>
+
+    </main>
+
 </body>
+
 </html>

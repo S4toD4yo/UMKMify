@@ -3718,3 +3718,694 @@ body {
 
     border: 1px solid #00B9FB;
 }
+
+/* ========================================
+   Checkout Page
+   ======================================== */
+
+.checkoutPage {
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 132px 24px 64px;
+
+    box-sizing: border-box;
+}
+
+
+/* Checkout Section */
+
+.checkoutSection {
+    width: 100%;
+    padding: 24px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+.checkoutSection + .checkoutSection {
+    margin-top: 16px;
+}
+
+
+/* Checkout Section Title */
+
+.checkoutSectionTitle {
+    margin: 0;
+
+    color: #343434;
+
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+    line-height: 1.2;
+}
+
+/* ----------------------------------------------------------------------- */
+/* Checkout Fields                                                         */
+/* ----------------------------------------------------------------------- */
+
+.checkoutPageState {
+    margin: 0;
+    padding: 64px 0;
+
+    text-align: center;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 18px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.checkoutFieldRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.checkoutField {
+    margin-top: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    min-width: 0;
+}
+
+.checkoutFieldRow .checkoutField {
+    margin-top: 0;
+}
+
+.checkoutFieldRow + .checkoutField,
+.checkoutField + .checkoutFieldRow {
+    margin-top: 16px;
+}
+
+.checkoutLabel {
+    color: #343434;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.checkoutInput,
+.checkoutSelect {
+    width: 100%;
+    padding: 10px 12px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+    color: #343434;
+
+    border: 1px solid rgba(52, 52, 52, 0.24);
+    border-radius: 4px;
+
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.checkoutInput:focus,
+.checkoutSelect:focus {
+    outline: none;
+
+    border-color: #00B9FB;
+}
+
+/* Product Details */
+.checkoutItem {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.checkoutItemImage {
+    width: 88px;
+    height: 88px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(52, 52, 52, 0.08);
+
+    border-radius: 4px;
+
+    overflow: hidden;
+}
+
+.checkoutItemImage img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.checkoutItemImage.isEmpty img {
+    width: 32px;
+    height: 32px;
+
+    object-fit: contain;
+
+    opacity: 0.48;
+}
+
+.checkoutItemText {
+    min-width: 0;
+}
+
+.checkoutItemName {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.checkoutItemMeta {
+    margin: 4px 0 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.checkoutItemSubtotal {
+    margin: 8px 0 0;
+
+    color: #00B9FB;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+/* Shipping and Payment options */
+.checkoutOptions {
+    margin-top: 16px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.checkoutOption {
+    padding: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    border: 2px solid rgba(52, 52, 52, 0.16);
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    transition: border-color 0.15s ease;
+}
+
+.checkoutOption:hover {
+    border-color: #7CD8FD;
+}
+
+.checkoutOption.selected {
+    border-color: #00B9FB;
+}
+
+.checkoutOption input {
+    flex-shrink: 0;
+
+    accent-color: #00B9FB;
+}
+
+.checkoutOptionText {
+    min-width: 0;
+}
+
+.checkoutOptionName {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.checkoutOptionMeta {
+    margin: 4px 0 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Payment Details */
+.checkoutSummary {
+    margin: 16px 0 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 12px;
+    column-gap: 16px;
+}
+
+.checkoutSummary dt {
+    margin: 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.checkoutSummary dd {
+    margin: 0;
+
+    text-align: right;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.checkoutSummary .checkoutSummaryTotal {
+    padding-top: 12px;
+
+    border-top: 1px solid rgba(52, 52, 52, 0.16);
+
+    color: #343434;
+    font-weight: 600;
+}
+
+.checkoutSummary dd.checkoutSummaryTotal {
+    color: #00B9FB;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.checkoutError {
+    margin: 16px 0 0;
+
+    color: #FF3838;
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+
+    white-space: pre-line;
+}
+
+.checkoutPlaceOrderButton {
+    margin-top: 24px;
+    padding: 12px 24px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    background-color: #00B9FB;
+    color: #F8F8FF;
+
+    border: none;
+    border-radius: 4px;
+
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.checkoutPlaceOrderButton:hover {
+    background-color: #7CD8FD;
+}
+
+.checkoutPlaceOrderButton:active {
+    opacity: 0.5;
+}
+
+.checkoutPlaceOrderButton:disabled {
+    opacity: 0.48;
+    cursor: default;
+}
+
+
+/* ----------------------------------------------------------------------- */
+/* Purchases                                                               */
+/* ----------------------------------------------------------------------- */
+
+.purchasesPage {
+    padding-left: 64px;
+    padding-right: 64px;
+    margin-top: 170px;
+}
+
+.purchasesTitle {
+    margin: 0;
+
+    color: #343434;
+    font-size: 32px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
+
+.purchasesState {
+    margin: 0;
+    padding: 64px 0;
+
+    text-align: center;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 18px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+/* Status tabs */
+.purchasesTabs {
+    margin-top: 24px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.purchasesTab {
+    padding: 8px 16px;
+
+    background-color: #F8F8FF;
+    color: #343434;
+
+    border: 2px solid rgba(52, 52, 52, 0.16);
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.purchasesTab:hover {
+    border-color: #7CD8FD;
+}
+
+.purchasesTab.active {
+    border-color: #00B9FB;
+    color: #00B9FB;
+}
+
+/* Order cards */
+.purchasesList {
+    margin-top: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.purchaseCard {
+    padding: 24px;
+
+    box-sizing: border-box;
+
+    background-color: #F8F8FF;
+
+    border-radius: 4px;
+
+    box-shadow: 0 4px 16px 0 rgba(52, 52, 52, 0.16);
+}
+
+.purchaseCardHeader {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding-bottom: 16px;
+
+    border-bottom: 1px solid rgba(52, 52, 52, 0.16);
+}
+
+.purchaseCardNumber {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5%;
+}
+
+.purchaseCardDate {
+    margin: 0;
+
+    /* Pushes the badges to the far end of the header. */
+    margin-right: auto;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.purchaseBadge {
+    padding: 4px 12px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+
+    white-space: nowrap;
+}
+
+/* Schema.md's lifecycle, in Design.md's semantic colours. */
+.purchaseBadge.pending {
+    color: #FAA500;
+    background-color: rgba(250, 165, 0, 0.16);
+}
+
+.purchaseBadge.processing,
+.purchaseBadge.shipped {
+    color: #00B9FB;
+    background-color: rgba(0, 185, 251, 0.16);
+}
+
+.purchaseBadge.completed,
+.purchaseBadge.paid {
+    color: #3DCC3F;
+    background-color: rgba(61, 204, 63, 0.16);
+}
+
+.purchaseBadge.cancelled,
+.purchaseBadge.failed {
+    color: #FF3838;
+    background-color: rgba(255, 56, 56, 0.16);
+}
+
+.purchaseBadge.unpaid {
+    color: #FAA500;
+    background-color: rgba(250, 165, 0, 0.16);
+}
+
+/* One block per store, because one order can span several. */
+.purchaseStore {
+    padding-top: 16px;
+}
+
+.purchaseStoreName {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.purchaseStoreMeta {
+    margin: 4px 0 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.purchaseItem {
+    margin-top: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    text-decoration: none;
+}
+
+.purchaseItemImage {
+    width: 64px;
+    height: 64px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(52, 52, 52, 0.08);
+
+    border-radius: 4px;
+
+    overflow: hidden;
+}
+
+.purchaseItemImage img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.purchaseItemImage.isEmpty img {
+    width: 24px;
+    height: 24px;
+
+    object-fit: contain;
+
+    opacity: 0.48;
+}
+
+.purchaseItemText {
+    min-width: 0;
+
+    /* Pushes the line total to the far end of the row. */
+    margin-right: auto;
+}
+
+.purchaseItemName {
+    margin: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+.purchaseItemMeta {
+    margin: 4px 0 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.purchaseItemSubtotal {
+    margin: 0;
+
+    flex-shrink: 0;
+
+    color: #343434;
+    font-size: 16px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5%;
+}
+
+/* Footer of the card */
+.purchaseCardFooter {
+    margin-top: 24px;
+    padding-top: 16px;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+
+    border-top: 1px solid rgba(52, 52, 52, 0.16);
+}
+
+.purchaseCardShipping {
+    margin: 0;
+
+    margin-right: auto;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.purchaseCardTotalLabel {
+    margin: 0;
+
+    color: rgba(52, 52, 52, 0.64);
+    font-size: 12px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5%;
+}
+
+.purchaseCardTotal {
+    margin: 0;
+
+    color: #00B9FB;
+    font-size: 24px;
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5%;
+}
