@@ -20,6 +20,13 @@ Berdasarkan arsitektur proyek, berikut adalah susunan teknologi yang digunakan:
 
 ---
 
+## Deployment
+
+* **FrontEnd (Vercel):** Terintegrasi langsung dengan repository GitHub. `vercel.json` telah dikonfigurasi untuk menangani rewrite rute SPA.
+* **BackEnd (Railway):** Menggunakan `nixpacks.toml` dan `railway.json` untuk build PHP runtime, migration otomatis, dan penyediaan database MySQL Cloud.
+
+---
+
 ## Fitur Utama
 
 ### Sisi Pembeli (Customer / User)
@@ -78,7 +85,7 @@ UMKMify/
 
 ---
 
-## 🛠️ Panduan Instalasi & Menjalankan Lokal
+## Panduan Instalasi & Menjalankan Lokal
 
 Pastikan Anda telah menginstal kebutuhan berikut di sistem lokal Anda:
 * **PHP >= 8.2** & **Composer**
@@ -159,25 +166,3 @@ Aplikasi FrontEnd akan berjalan di: `http://localhost:5173`
 | `DELETE`| `/api/seller/products/{id}`| Hapus produk | Seller |
 
 ---
-
-## Deployment
-
-* **FrontEnd (Vercel):** Terintegrasi langsung dengan repository GitHub. `vercel.json` telah dikonfigurasi untuk menangani rewrite rute SPA.
-* **BackEnd (Railway):** Menggunakan `nixpacks.toml` dan `railway.json` untuk build PHP runtime, migration otomatis, dan penyediaan database MySQL Cloud.
-
----
-
-## Kontribusi
-
-Kontribusi selalu terbuka untuk pengembangan platform UMKMify:
-1. Fork repository ini.
-2. Buat branch fitur baru (`git checkout -b feature/FiturKeren`).
-3. Commit perubahan Anda (`git commit -m 'Menambahkan Fitur Keren'`).
-4. Push ke branch (`git push origin feature/FiturKeren`).
-5. Buat Pull Request di GitHub.
-
----
-
-## Lisensi
-
-Proyek ini dibuat untuk pengembangan platform digital UMKM Indonesia dan didistribusikan di bawah lisensi open-source [MIT License](LICENSE).
