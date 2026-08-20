@@ -33,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // the controller, so an id from another store reads as a 404.
     Route::get('/products/{product}', [ProductController::class, 'show']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
+    // Edit Product saves here. The form posts multipart, which PHP will not
+    // parse on a real PUT, so it arrives as POST + `_method=PUT`.
+    Route::put('/products/{product}', [ProductController::class, 'update']);
 });
 
 Route::prefix('auth')->group(function () {

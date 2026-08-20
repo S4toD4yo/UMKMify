@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreProductRequest;
+use App\Http\Requests\Api\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Role;
@@ -93,6 +94,126 @@ class ProductController extends Controller
             // cards are a picture of the catalogue, and the filters are how
             // the seller drills into it.
             'summary' => $this->summary($store->id),
+        ]);
+    }
+
+    /**
+     * Save the Edit Product form over an existing product.
+     *
+     * The form posts as multipart/form-data because it can carry new image
+     * files, and PHP does not parse a multipart body on a real PUT, so the
+     * frontend sends POST with `_method=PUT` and Laravel spoofs it back.
+     */
+    public function update(UpdateProductRequest $request, Product $product): JsonResponse
+    {
+        $this->authorizeProduct($request, $product);
+
+        $validated = $request->validated();
+
+        // Same (store_id, sku) unique key as store(), except the product is
+        // allowed to keep the SKU it already has.
+        $skuTaken = Product::where('store_id', $product->store_id)
+            ->where('sku', $validated['sku'])
+            ->where('id', '!=', $product->id)
+            ->exists();
+
+        if ($skuTaken) {
+            throw ValidationException::withMessages([
+                'sku' => 'You already have a product with this SKU.',
+            ]);
+        }
+
+        /* `existing_image_ids` is the seller's whole say over the images the
+           product already had: what is listed survives, in that order, and
+           what is missing goes. Ids that never belonged to this product are
+           dropped rather than trusted. */
+        $current = $product->images()->get()->keyBy('id');
+
+        $keptIds = collect($request->input('existing_image_ids', []))
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->filter(fn (int $id) => $current->has($id))
+            ->values();
+
+        $removed = $current->reject(fn (ProductImage $image) => $keptIds->contains($image->id));
+
+        $uploads = array_values(array_filter(
+            $request->file('images', []),
+            fn ($file) => $file instanceof UploadedFile
+        ));
+
+        $storedPaths = [];
+
+        try {
+            DB::transaction(function () use ($product, $validated, $keptIds, $removed, $uploads, &$storedPaths) {
+                $product->fill($this->productAttributes($validated));
+
+                /* published_at marks when the product went live. Pulling it
+                   off sale clears it, so re-activating later stamps the date
+                   it actually went back up. */
+                $isActive = $validated['status'] === Product::STATUS_ACTIVE;
+
+                $product->published_at = $isActive
+                    ? ($product->published_at ?? now())
+                    : null;
+
+                $product->save();
+
+                if ($removed->isNotEmpty()) {
+                    ProductImage::whereIn('id', $removed->pluck('id'))->delete();
+                }
+
+                // The first image is the one the Product List shows, so the
+                // order the seller left the cards in is the order stored.
+                $keptIds->each(function (int $id, int $index) {
+                    ProductImage::where('id', $id)->update([
+                        'sort_order' => $index,
+                        'is_primary' => $index === 0,
+                    ]);
+                });
+
+                foreach ($uploads as $offset => $upload) {
+                    $path = $upload->store('products/' . $product->id, 'public');
+
+                    if ($path === false) {
+                        throw new \RuntimeException('Failed to store a product image.');
+                    }
+
+                    $storedPaths[] = $path;
+
+                    $index = $keptIds->count() + $offset;
+
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_url' => $path,
+                        'is_primary' => $index === 0,
+                        'sort_order' => $index,
+                    ]);
+                }
+            });
+        } catch (\Throwable $e) {
+            // Same as store(): the rows roll back, the files do not.
+            foreach ($storedPaths as $path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            throw $e;
+        }
+
+        // Only once the transaction has committed, and never for a row that
+        // was seeded with a full URL to somebody else's host.
+        foreach ($removed as $image) {
+            if (! str_starts_with($image->image_url, 'http://') && ! str_starts_with($image->image_url, 'https://')) {
+                Storage::disk('public')->delete($image->image_url);
+            }
+        }
+
+        $product->load(['images', 'category', 'subcategory']);
+
+        return response()->json([
+            'message' => 'Product updated successfully.',
+            'product_id' => $product->id,
+            'product' => $this->productPayload($product),
         ]);
     }
 
@@ -214,34 +335,8 @@ class ProductController extends Controller
 
         try {
             $product = DB::transaction(function () use ($validated, $store, $isActive, $uploads, &$storedPaths) {
-                $product = Product::create([
+                $product = Product::create($this->productAttributes($validated) + [
                     'store_id' => $store->id,
-
-                    'name' => $validated['name'],
-                    'sku' => $validated['sku'],
-
-                    'category_id' => $validated['category_id'],
-                    'subcategory_id' => $validated['subcategory_id'] ?? null,
-
-                    'description' => $validated['description'],
-
-                    'price' => $validated['selling_price'],
-                    'minimum_purchase' => $validated['minimum_purchase'],
-                    'stock' => $validated['stock'],
-
-                    'weight' => $validated['weight'],
-                    'unit' => $validated['unit'],
-
-                    'brand' => $validated['brand'] ?? null,
-                    'location' => $validated['location'] ?? null,
-
-                    'length' => $validated['length'] ?? null,
-                    'width' => $validated['width'] ?? null,
-                    'height' => $validated['height'] ?? null,
-
-                    'shipping_fee_type' => $validated['shipping_fee_payer'],
-
-                    'status' => $validated['status'],
                     'published_at' => $isActive ? now() : null,
                 ]);
 
@@ -331,6 +426,44 @@ class ProductController extends Controller
         }
 
         return $slug;
+    }
+
+    /**
+     * The form's field names mapped onto the columns in umkmify.sql. Shared
+     * by store() and update() so the two cannot drift apart.
+     *
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function productAttributes(array $validated): array
+    {
+        return [
+            'name' => $validated['name'],
+            'sku' => $validated['sku'],
+
+            'category_id' => $validated['category_id'],
+            'subcategory_id' => $validated['subcategory_id'] ?? null,
+
+            'description' => $validated['description'],
+
+            'price' => $validated['selling_price'],
+            'minimum_purchase' => $validated['minimum_purchase'],
+            'stock' => $validated['stock'],
+
+            'weight' => $validated['weight'],
+            'unit' => $validated['unit'],
+
+            'brand' => $validated['brand'] ?? null,
+            'location' => $validated['location'] ?? null,
+
+            'length' => $validated['length'] ?? null,
+            'width' => $validated['width'] ?? null,
+            'height' => $validated['height'] ?? null,
+
+            'shipping_fee_type' => $validated['shipping_fee_payer'],
+
+            'status' => $validated['status'],
+        ];
     }
 
     /**

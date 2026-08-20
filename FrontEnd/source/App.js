@@ -571,10 +571,17 @@ async function setupAuthPageGuard() {
 /* Product Image Drop Zone                                                 */
 /* ----------------------------------------------------------------------- */
 
-/* The files picked in the drop zone, shared with Save & Publish so it can
-   put them in the multipart request. Only ever mutated in place, never
-   reassigned, so both sides keep seeing the same array. */
+/* What the five drop zone cards are showing, shared with the save buttons
+   so they can put it in the multipart request. Only ever mutated in place,
+   never reassigned, so every side keeps seeing the same array.
+
+   An entry is either a File the seller just picked, or — on Edit Product —
+   an { id, url } for an image the product already has on the server. */
 const selectedProductImages = [];
+
+/* Set by setupProductImageUpload(), so Edit Product can repaint the cards
+   after dropping the product's own images into the array. */
+let renderProductImageCards = null;
 
 /* Matches `images.*` => max:2048 on the API side, and the "Max 2MB" note
    printed inside the drop zone. */
@@ -607,7 +614,11 @@ function setupProductImageUpload() {
                 return;
             }
 
-            const imageUrl = URL.createObjectURL(image);
+            // A File has to be turned into a URL; an image already on the
+            // server came with one.
+            const imageUrl = image instanceof File
+                ? URL.createObjectURL(image)
+                : image.url;
 
             card.innerHTML = `
                 <img
@@ -618,6 +629,8 @@ function setupProductImageUpload() {
             `;
         });
     }
+
+    renderProductImageCards = renderImageCards;
 
     function addImages(files) {
         const imageFiles = Array.from(files)
@@ -717,6 +730,16 @@ if (sellingPriceInput) {
 
 /* Both selects are filled from GET /api/categories rather than hardcoded in
    the markup, so the ids always match what the database actually has. */
+
+/* Resolves once the selects are filled. Edit Product waits on it before
+   preselecting, otherwise it would be setting a value on an empty select. */
+let productCategoriesReady = null;
+
+/* Set by setupProductCategories(): picks a category and, once that category's
+   sub categories have been built, the sub category under it. Stays null when
+   the categories request fails. */
+let selectProductCategory = null;
+
 async function setupProductCategories() {
     const categorySelect = document.getElementById("productCategory");
     const subcategorySelect = document.getElementById("productSubCategory");
@@ -784,9 +807,9 @@ async function setupProductCategories() {
 
     /* The API rejects a sub category that does not sit under the chosen
        category, so the options are rebuilt on every change. */
-    categorySelect.addEventListener("change", () => {
+    function renderSubcategories(categoryId) {
         const category = categories.find(
-            (item) => String(item.id) === categorySelect.value
+            (item) => String(item.id) === String(categoryId)
         );
 
         const subcategories = category ? category.subcategories : [];
@@ -801,7 +824,26 @@ async function setupProductCategories() {
         subcategories.forEach((subcategory) => {
             addOption(subcategorySelect, subcategory.id, subcategory.name);
         });
+    }
+
+    categorySelect.addEventListener("change", () => {
+        renderSubcategories(categorySelect.value);
     });
+
+    selectProductCategory = (categoryId, subcategoryId) => {
+        if (!categoryId) {
+            return;
+        }
+
+        categorySelect.value = String(categoryId);
+
+        // Not fired by setting .value, so the sub categories are built by hand.
+        renderSubcategories(categoryId);
+
+        if (subcategoryId) {
+            subcategorySelect.value = String(subcategoryId);
+        }
+    };
 }
 
 
@@ -842,19 +884,82 @@ function setupProductStatus() {
 /* A 422 comes back as { message, errors: { field: [...] } }, where `message`
    is only the first error plus "(and 3 more errors)". Listing them all
    matters most for the images, which fail one file at a time. */
-function validationMessage(data) {
+function validationMessage(data, fallback) {
     if (data && data.errors) {
         return Object.values(data.errors)
             .flat()
             .join("\n");
     }
 
-    return (data && data.message) || "Failed to publish product.";
+    return (data && data.message) || fallback || "Failed to save product.";
+}
+
+/* Add New Product and Edit Product are the same form, so both read it the
+   same way and the two cannot drift apart. */
+function readProductForm() {
+    return {
+        name: document.getElementById("productName").value.trim(),
+        sku: document.getElementById("productSku").value.trim(),
+
+        // Left as the raw select value. An untouched select reads "",
+        // which the API turns into null; Number("") would send 0, and
+        // there is no category 0.
+        category_id:
+            document.getElementById("productCategory").value,
+
+        subcategory_id:
+            document.getElementById("productSubCategory").value,
+
+        description:
+            document.getElementById("productDescription").value.trim(),
+
+        selling_price:
+            document
+                .getElementById("sellingPrice")
+                .value
+                .replace(/\./g, ""),
+
+        minimum_purchase:
+            document.getElementById("minimumPurchase").value,
+
+        stock:
+            document.getElementById("productStock").value,
+
+        weight:
+            document.getElementById("productWeight").value,
+
+        unit:
+            document.getElementById("unitOfItem").value,
+
+        brand:
+            document.getElementById("productBrand").value.trim(),
+
+        location:
+            document.getElementById("productLocation").value.trim(),
+
+        length:
+            document.getElementById("productLength").value,
+
+        width:
+            document.getElementById("productWidth").value,
+
+        height:
+            document.getElementById("productHeight").value,
+
+        shipping_fee_payer:
+            document.getElementById("shippingFee").value,
+
+        status:
+            document.querySelector(".productStatusButton.active")
+                ? "active"
+                : "nonactive",
+    };
 }
 
 // Save & Publish
 function setupSavePublish() {
-    const button = document.querySelector(".savePublishButton");
+    // Edit Product wears the same bar, so the two are told apart by data-mode.
+    const button = document.querySelector('.savePublishButton[data-mode="create"]');
 
     if (!button) {
         return;
@@ -868,63 +973,7 @@ function setupSavePublish() {
             return;
         }
 
-        const fields = {
-            name: document.getElementById("productName").value.trim(),
-            sku: document.getElementById("productSku").value.trim(),
-
-            // Left as the raw select value. An untouched select reads "",
-            // which the API turns into null; Number("") would send 0, and
-            // there is no category 0.
-            category_id:
-                document.getElementById("productCategory").value,
-
-            subcategory_id:
-                document.getElementById("productSubCategory").value,
-
-            description:
-                document.getElementById("productDescription").value.trim(),
-
-            selling_price:
-                document
-                    .getElementById("sellingPrice")
-                    .value
-                    .replace(/\./g, ""),
-
-            minimum_purchase:
-                document.getElementById("minimumPurchase").value,
-
-            stock:
-                document.getElementById("productStock").value,
-
-            weight:
-                document.getElementById("productWeight").value,
-
-            unit:
-                document.getElementById("unitOfItem").value,
-
-            brand:
-                document.getElementById("productBrand").value.trim(),
-
-            location:
-                document.getElementById("productLocation").value.trim(),
-
-            length:
-                document.getElementById("productLength").value,
-
-            width:
-                document.getElementById("productWidth").value,
-
-            height:
-                document.getElementById("productHeight").value,
-
-            shipping_fee_payer:
-                document.getElementById("shippingFee").value,
-
-            status:
-                document.querySelector(".productStatusButton.active")
-                    ? "active"
-                    : "nonactive",
-        };
+        const fields = readProductForm();
 
         // multipart/form-data rather than JSON: the product images are real
         // files, and JSON has nowhere to put them.
@@ -934,9 +983,13 @@ function setupSavePublish() {
             form.append(field, value);
         });
 
-        selectedProductImages.forEach((image) => {
-            form.append("images[]", image, image.name);
-        });
+        // Nothing but Files here: a brand new product has no server-side
+        // images to keep.
+        selectedProductImages
+            .filter((image) => image instanceof File)
+            .forEach((image) => {
+                form.append("images[]", image, image.name);
+            });
 
         console.log(
             "Product Payload:",
@@ -975,7 +1028,7 @@ function setupSavePublish() {
                     data
                 );
 
-                alert(validationMessage(data));
+                alert(validationMessage(data, "Failed to publish product."));
 
                 return;
             }
@@ -1002,6 +1055,255 @@ function setupSavePublish() {
 
         }
     });
+}
+
+/* ----------------------------------------------------------------------- */
+/* Edit Product                                                            */
+/* ----------------------------------------------------------------------- */
+
+/* editProduct.html is newProduct.html with a different title and a Save
+   Changes button, so everything the Add New Product form already sets up —
+   the drop zone, the category selects, the status buttons, the price
+   formatting — works here untouched. This only fills the form in from
+   GET /api/products/{id} and posts it back with `_method=PUT`. */
+
+// A number field shows "" for null, and "321.00" is not what a seller typed.
+function fillNumberInput(id, value) {
+    const input = document.getElementById(id);
+
+    if (!input) {
+        return;
+    }
+
+    input.value = value === null || value === undefined ? "" : Number(value);
+}
+
+function fillProductForm(product) {
+    document.getElementById("productName").value = product.name || "";
+    document.getElementById("productSku").value = product.sku || "";
+    document.getElementById("productDescription").value = product.description || "";
+
+    // Thousand separated, the way the input's own listener would leave it.
+    document.getElementById("sellingPrice").value =
+        Number(product.price || 0).toLocaleString("id-ID");
+
+    fillNumberInput("minimumPurchase", product.minimum_purchase);
+    fillNumberInput("productStock", product.stock);
+    fillNumberInput("productWeight", product.weight);
+    fillNumberInput("productLength", product.length);
+    fillNumberInput("productWidth", product.width);
+    fillNumberInput("productHeight", product.height);
+
+    document.getElementById("productBrand").value = product.brand || "";
+    document.getElementById("productLocation").value = product.location || "";
+
+    document.getElementById("unitOfItem").value = product.unit || "";
+    document.getElementById("shippingFee").value = product.shipping_fee_payer || "";
+
+    /* The same two classes setupProductStatus() toggles, and the same ones
+       readProductForm() reads back. */
+    const statusButtons = document.querySelectorAll(".productStatusButton");
+
+    statusButtons.forEach((button) => {
+        button.classList.remove("active", "nonActive");
+
+        if (button.dataset.status !== product.status) {
+            return;
+        }
+
+        button.classList.add(
+            product.status === "active" ? "active" : "nonActive"
+        );
+    });
+
+    /* The product's own images take the drop zone slots. They are kept as
+       { id, url } so the save can tell the API which ones to hold on to. */
+    selectedProductImages.length = 0;
+
+    (product.images || []).forEach((image) => {
+        selectedProductImages.push({ id: image.id, url: image.url });
+    });
+
+    if (renderProductImageCards) {
+        renderProductImageCards();
+    }
+}
+
+function setupEditProduct() {
+    const button = document.querySelector('.savePublishButton[data-mode="edit"]');
+
+    if (!button) {
+        return;
+    }
+
+    const productId = new URLSearchParams(window.location.search).get("id");
+
+    // Reached without an id there is nothing to edit, so send them back to
+    // the list rather than showing an empty form that cannot be saved.
+    if (!productId) {
+        window.location.href = "productList.html";
+        return;
+    }
+
+    async function loadProduct() {
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "../User/login.html";
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Loading...";
+
+        let response;
+
+        try {
+            response = await fetch(`${API_BASE}/products/${productId}`, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error("Failed to load product:", error);
+
+            alert(
+                "Unable to connect to the server. Please make sure Laravel is running."
+            );
+
+            return;
+        } finally {
+            button.disabled = false;
+            button.textContent = "Save Changes";
+        }
+
+        if (response.status === 401) {
+            tokenStore.clear();
+            window.location.href = "../User/login.html";
+            return;
+        }
+
+        // 404 covers both a product that does not exist and one belonging to
+        // another seller: the API does not tell the two apart on purpose.
+        if (response.status === 404) {
+            alert("This product could not be found.");
+            window.location.href = "productList.html";
+            return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            console.error("Failed to load product:", data);
+
+            alert(data.message || "Failed to load this product.");
+
+            return;
+        }
+
+        const product = data.product;
+
+        if (!product) {
+            return;
+        }
+
+        fillProductForm(product);
+
+        /* Last, and awaited: the selects are filled by a request of their
+           own, and setting .value before the options exist does nothing. */
+        await productCategoriesReady;
+
+        if (selectProductCategory) {
+            selectProductCategory(product.category_id, product.subcategory_id);
+        }
+    }
+
+    button.addEventListener("click", async () => {
+        const token = tokenStore.get();
+
+        if (!token) {
+            window.location.href = "../User/login.html";
+            return;
+        }
+
+        const form = new FormData();
+
+        /* POST, not PUT: PHP does not parse a multipart body on a real PUT,
+           so Laravel is asked to spoof the method instead. */
+        form.append("_method", "PUT");
+
+        Object.entries(readProductForm()).forEach(([field, value]) => {
+            form.append(field, value);
+        });
+
+        /* The images the product keeps, in the order the cards are in. An
+           image the seller removed is simply not listed, which is how the
+           API is told to delete it. */
+        selectedProductImages
+            .filter((image) => !(image instanceof File))
+            .forEach((image) => {
+                form.append("existing_image_ids[]", image.id);
+            });
+
+        selectedProductImages
+            .filter((image) => image instanceof File)
+            .forEach((image) => {
+                form.append("images[]", image, image.name);
+            });
+
+        button.disabled = true;
+        button.textContent = "Saving...";
+
+        try {
+            const response = await fetch(`${API_BASE}/products/${productId}`, {
+                method: "POST",
+
+                headers: {
+                    // Content-Type is left out on purpose: the browser has to
+                    // set it so the multipart boundary goes with it.
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+
+                body: form,
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.status === 401) {
+                tokenStore.clear();
+                window.location.href = "../User/login.html";
+                return;
+            }
+
+            if (!response.ok) {
+                console.error("Failed to save product:", data);
+
+                alert(validationMessage(data, "Failed to save changes."));
+
+                return;
+            }
+
+            alert("Product updated successfully!");
+
+            window.location.href = "productList.html";
+
+        } catch (error) {
+            console.error("Failed to connect to Laravel API:", error);
+
+            alert(
+                "Unable to connect to the server. Please make sure Laravel is running."
+            );
+
+        } finally {
+            button.disabled = false;
+            button.textContent = "Save Changes";
+        }
+    });
+
+    loadProduct();
 }
 
 /* ----------------------------------------------------------------------- */
@@ -1130,7 +1432,7 @@ function productRowMarkup(product) {
 
             <div class="productListActions">
                 <a
-                    href="../Error/comingSoon.html"
+                    href="editProduct.html?id=${product.id}"
                     class="productListActionButton"
                     title="Edit ${name}"
                 >
@@ -1313,9 +1615,11 @@ setupSavePublish();
 
 setupProductStatus();
 
-setupProductCategories();
+productCategoriesReady = setupProductCategories();
 
 setupProductImageUpload();
+
+setupEditProduct();
 
 setupLoginForm();
 setupRegisterForm();

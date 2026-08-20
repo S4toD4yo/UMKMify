@@ -2962,10 +2962,10 @@ body {
 .productListRow {
     display: grid;
     grid-template-columns:
-        minmax(128px, 2fr)
+        minmax(256px, 2fr)
         minmax(64px, 1fr)
-        minmax(64px, 1fr)
-        minmax(64px, 1fr)
+        minmax(96px, 1fr)
+        minmax(32px, 1fr)
         minmax(128px, 1fr)
         minmax(128px, 1fr)
         104px;
