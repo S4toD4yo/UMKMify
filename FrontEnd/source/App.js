@@ -1062,162 +1062,218 @@ function setupSavePublish() {
 /* ----------------------------------------------------------------------- */
 
 /* product.html, reached from a homepage card. Public like the homepage, so
-   no token goes with the request. */
+   no token goes with the request.
 
-/* Only the rows the seller actually filled in are shown: half of these are
-   nullable columns, and an empty row reads as missing information rather
-   than as "not applicable". */
-function productDetailFacts(product) {
-    const dimensions = [product.length, product.width, product.height];
+   The markup is a static mockup with placeholder content, and every hook
+   below is a class already in it — nothing here adds ids or restructures the
+   page, so restyling it stays safe. */
 
-    const hasDimensions = dimensions.every(
-        (value) => value !== null && value !== undefined && value !== ""
-    );
-
-    return [
-        ["Category", product.category],
-        ["Sub Category", product.subcategory],
-        ["Brand", product.brand],
-        ["Minimum Purchase", product.minimum_purchase
-            ? `${product.minimum_purchase} ${product.unit || ""}`.trim()
-            : null],
-        ["Unit", product.unit],
-        ["Weight", product.weight ? `${Number(product.weight)} g` : null],
-        ["Dimensions", hasDimensions
-            ? dimensions.map(Number).join(" × ") + " cm"
-            : null],
-        ["Shipping Fee", product.shipping_fee_payer
-            ? `Borne by ${product.shipping_fee_payer}`
-            : null],
-        ["Location", product.location],
-    ].filter(([, value]) => value !== null && value !== undefined && value !== "");
-}
-
-/* The same three readings the Product List badges use, worded for a shopper
-   rather than for the seller. */
-function productDetailStock(stock) {
-    const count = Number(stock) || 0;
-
-    if (count <= 0) {
-        return { label: "Out of stock", className: "outOfStock" };
-    }
-
-    if (count < 10) {
-        return { label: `Only ${count} left in stock`, className: "lowStock" };
-    }
-
-    return { label: `${count} in stock`, className: "" };
-}
-
+/* The gallery, wired over however many images the product actually has: the
+   mockup draws three thumbnails, a real product has one to five. */
 function renderProductGallery(product) {
-    const main = document.getElementById("productGalleryMain");
-    const thumbs = document.getElementById("productGalleryThumbs");
+    const main = document.querySelector(".productGalleryMain");
+    const thumbs = document.querySelector(".productGalleryThumbs");
+
+    if (!main) {
+        return;
+    }
 
     const images = product.images || [];
+    const name = escapeHtml(product.name);
 
+    // Listing a photo is optional, so this really does happen.
     if (!images.length) {
         main.classList.add("isEmpty");
         main.innerHTML = '<img src="../../assets/icons/SellerCentre/Image.svg" alt="">';
-        thumbs.innerHTML = "";
+
+        if (thumbs) {
+            thumbs.innerHTML = "";
+        }
 
         return;
     }
 
-    const name = escapeHtml(product.name);
+    main.classList.remove("isEmpty");
 
     function showImage(index) {
         main.innerHTML = `<img src="${escapeHtml(images[index].url)}" alt="${name}">`;
+
+        if (!thumbs) {
+            return;
+        }
 
         thumbs.querySelectorAll(".productGalleryThumb").forEach((thumb, position) => {
             thumb.classList.toggle("active", position === index);
         });
     }
 
-    // A single image has nothing to switch between, so it gets no thumbnails.
-    thumbs.innerHTML = images.length > 1
-        ? images
-            .map((image, index) => `
-                <button
-                    type="button"
-                    class="productGalleryThumb"
-                    data-image-index="${index}"
-                    aria-label="Show image ${index + 1}"
-                >
-                    <img src="${escapeHtml(image.url)}" alt="">
-                </button>
-            `)
-            .join("")
-        : "";
+    if (thumbs) {
+        // One image has nothing to switch between, so it gets no thumbnails.
+        thumbs.innerHTML = images.length > 1
+            ? images
+                .map((image, index) => `
+                    <button
+                        class="productGalleryThumb"
+                        type="button"
+                        data-image-index="${index}"
+                        aria-label="Show image ${index + 1}"
+                    >
+                        <img src="${escapeHtml(image.url)}" alt="">
+                    </button>
+                `)
+                .join("")
+            : "";
 
-    thumbs.querySelectorAll(".productGalleryThumb").forEach((thumb) => {
-        thumb.addEventListener("click", () => {
-            showImage(Number(thumb.dataset.imageIndex));
+        thumbs.querySelectorAll(".productGalleryThumb").forEach((thumb) => {
+            thumb.addEventListener("click", () => {
+                showImage(Number(thumb.dataset.imageIndex));
+            });
+        });
+    }
+
+    showImage(0);
+}
+
+/* The quantity stepper and the Total Harga that follows it.
+
+   The bounds come from the product, not from the markup: `minimum_purchase`
+   is the floor the seller set, and `stock` is the ceiling, so the page cannot
+   offer more than there is. */
+function setupProductQuantity(product) {
+    const value = document.querySelector(".productQuantityValue");
+    const total = document.querySelector(".productTotalPriceValue");
+    const buttons = [...document.querySelectorAll(".productQuantityButton")];
+
+    const actions = [
+        document.querySelector(".productAddToCartButton"),
+        document.querySelector(".productBuyNowButton"),
+    ].filter(Boolean);
+
+    if (!value) {
+        return;
+    }
+
+    const stock = Number(product.stock) || 0;
+    const minimum = Math.max(1, Number(product.minimum_purchase) || 1);
+    const price = Number(product.price) || 0;
+
+    /* Sold out is its own state: there is no quantity to pick, so the
+       stepper and both actions go dead rather than offering a purchase the
+       stock cannot cover. */
+    const soldOut = stock <= 0;
+
+    // A minimum above the remaining stock is the seller's to fix; until then
+    // the ceiling wins, because stock is the harder limit of the two.
+    const floor = soldOut ? 0 : Math.min(minimum, stock);
+
+    let quantity = floor;
+
+    function render() {
+        value.textContent = quantity;
+
+        if (total) {
+            total.textContent = formatRupiah(price * quantity);
+        }
+
+        // The mockup's two buttons are minus then plus, in that order.
+        const [minus, plus] = buttons;
+
+        if (minus) {
+            minus.disabled = soldOut || quantity <= floor;
+        }
+
+        if (plus) {
+            plus.disabled = soldOut || quantity >= stock;
+        }
+
+        actions.forEach((action) => {
+            action.disabled = soldOut;
+        });
+    }
+
+    buttons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+            if (soldOut) {
+                return;
+            }
+
+            quantity += index === 0 ? -1 : 1;
+            quantity = Math.min(stock, Math.max(floor, quantity));
+
+            render();
         });
     });
 
-    showImage(0);
+    render();
+}
+
+/* The cart has no table in umkmify.sql yet, so both actions go where the
+   rest of the unbuilt features go. */
+function setupProductPurchaseActions() {
+    [
+        document.querySelector(".productAddToCartButton"),
+        document.querySelector(".productBuyNowButton"),
+    ]
+        .filter(Boolean)
+        .forEach((button) => {
+            button.addEventListener("click", () => {
+                if (button.disabled) {
+                    return;
+                }
+
+                window.location.href = "../Error/comingSoon.html";
+            });
+        });
 }
 
 function renderProductDetail(product) {
     document.title = `${product.name} | UMKMify`;
 
-    const categoryPath = [product.category, product.subcategory]
-        .filter(Boolean)
-        .join(" · ");
+    const name = document.querySelector(".productDetailName");
+    const price = document.querySelector(".productDetailPrice");
+    const sold = document.querySelector(".productDetailSold");
 
-    document.getElementById("productDetailCategory").textContent = categoryPath;
-    document.getElementById("productDetailName").textContent = product.name;
-    document.getElementById("productDetailPrice").textContent = formatRupiah(product.price);
-
-    const stock = productDetailStock(product.stock);
-    const stockSlot = document.getElementById("productDetailStock");
-
-    stockSlot.textContent = stock.label;
-    stockSlot.className = `productDetailStock ${stock.className}`.trim();
-
-    document.getElementById("productDetailFacts").innerHTML = productDetailFacts(product)
-        .map(([label, value]) => `
-            <dt>${escapeHtml(label)}</dt>
-            <dd>${escapeHtml(value)}</dd>
-        `)
-        .join("");
-
-    const store = product.store || "UMKMify Seller";
-
-    document.getElementById("productDetailSellerInitial").textContent =
-        store.charAt(0).toUpperCase();
-
-    document.getElementById("productDetailSellerName").textContent = store;
-    document.getElementById("productDetailSellerLocation").textContent =
-        product.location || "Indonesia";
-
-    renderProductGallery(product);
-
-    /* textContent, not innerHTML: the description is whatever the seller
-       typed, and the CSS keeps its line breaks. */
-    const description = document.getElementById("productDescription");
-
-    if (product.description) {
-        document.getElementById("productDescriptionText").textContent = product.description;
-        description.hidden = false;
+    // textContent throughout: this is seller input on a public page.
+    if (name) {
+        name.textContent = product.name;
     }
 
-    document.getElementById("productPageState").hidden = true;
-    document.getElementById("productDetail").hidden = false;
+    if (price) {
+        price.textContent = formatRupiah(product.price);
+    }
+
+    if (sold) {
+        sold.textContent = `${Number(product.sold) || 0} Terjual`;
+    }
+
+    renderProductGallery(product);
+    setupProductQuantity(product);
+    setupProductPurchaseActions();
+}
+
+/* Loading and error both replace the detail block, so the page never sits
+   there showing the mockup's placeholder content as if it were real. */
+function showProductPageState(message) {
+    const detail = document.querySelector(".productDetail");
+
+    if (!detail) {
+        return;
+    }
+
+    detail.innerHTML = `<p class="productPageState">${escapeHtml(message)}</p>`;
 }
 
 async function setupProductDetail() {
-    const detail = document.getElementById("productDetail");
-    const state = document.getElementById("productPageState");
+    const detail = document.querySelector(".productDetail");
 
-    if (!detail || !state) {
+    if (!detail) {
         return;
     }
 
     const productId = new URLSearchParams(window.location.search).get("id");
 
     if (!productId) {
-        state.textContent = "No product was selected.";
+        showProductPageState("No product was selected.");
         return;
     }
 
@@ -1233,8 +1289,9 @@ async function setupProductDetail() {
     } catch (error) {
         console.error("Failed to load the product:", error);
 
-        state.textContent =
-            "Unable to reach the server. Please make sure Laravel is running.";
+        showProductPageState(
+            "Unable to reach the server. Please make sure Laravel is running."
+        );
 
         return;
     }
@@ -1242,14 +1299,14 @@ async function setupProductDetail() {
     // 404 also covers a product that was taken off sale, which is deliberate:
     // a shopper has no business seeing an unlisted product either way.
     if (response.status === 404) {
-        state.textContent = "This product is no longer available.";
+        showProductPageState("This product is no longer available.");
         return;
     }
 
     if (!response.ok) {
         console.error("Failed to load the product:", response.status);
 
-        state.textContent = "Failed to load this product.";
+        showProductPageState("Failed to load this product.");
 
         return;
     }
@@ -1257,7 +1314,7 @@ async function setupProductDetail() {
     const data = await response.json().catch(() => ({}));
 
     if (!data.product) {
-        state.textContent = "Failed to load this product.";
+        showProductPageState("Failed to load this product.");
         return;
     }
 

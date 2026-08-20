@@ -8,6 +8,7 @@ use App\Models\ProductImage;
 use App\Models\Store;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * The shopper's side of the catalogue. Everything here is public and read
@@ -103,6 +104,9 @@ class CatalogController extends Controller
             'subcategory' => $product->subcategory?->name,
             'description' => $product->description,
 
+            // "0 Terjual" on the product page.
+            'sold' => $this->soldCount($product->id),
+
             'stock' => $product->stock,
             'minimum_purchase' => $product->minimum_purchase,
             'unit' => $product->unit,
@@ -125,5 +129,28 @@ class CatalogController extends Controller
                 ])
                 ->all(),
         ];
+    }
+
+    /**
+     * How many units of a product have actually been sold.
+     *
+     * Counted straight off `order_items` rather than from a column on
+     * `products`: there is no such column, and a stored counter would be one
+     * more thing that can fall out of step with the orders it stands for.
+     *
+     * Only `completed` seller orders count. Schema.md lists pending,
+     * processing, shipped, completed and cancelled as the lifecycle, and
+     * anything short of completed can still fall through.
+     *
+     * There are no order rows yet, so in practice this reads 0 today — it is
+     * here so the number is real once orders exist.
+     */
+    private function soldCount(int $productId): int
+    {
+        return (int) DB::table('order_items')
+            ->join('seller_orders', 'seller_orders.id', '=', 'order_items.seller_order_id')
+            ->where('order_items.product_id', $productId)
+            ->where('seller_orders.status', 'completed')
+            ->sum('order_items.quantity');
     }
 }

@@ -59,87 +59,136 @@
             </div>
         </nav>
 
-        <!-- Everything below is painted by setupProductDetail() in App.js
-             from GET /api/catalog/products/{id} -->
+        <!-- Product Content -->
         <main class="productPage">
 
-            <p class="productPageState" id="productPageState">
-                Loading product...
-            </p>
+            <!-- Product Detail -->
+            <div class="productDetail">
 
-            <div class="productDetail" id="productDetail" hidden>
+            <!-- Product Gallery -->
+            <section class="productGallery">
 
-                <!-- Gallery -->
-                <section class="productGallery">
+                <!-- Product Thumbnails -->
+                <div class="productGalleryThumbs">
 
-                    <div class="productGalleryMain" id="productGalleryMain"></div>
-
-                    <div class="productGalleryThumbs" id="productGalleryThumbs"></div>
-
-                </section>
-
-                <!-- Summary -->
-                <section class="productSummary">
-
-                    <p class="productDetailCategory" id="productDetailCategory"></p>
-
-                    <h1 class="productDetailName" id="productDetailName"></h1>
-
-                    <p class="productDetailPrice" id="productDetailPrice"></p>
-
-                    <p class="productDetailStock" id="productDetailStock"></p>
-
-                    <dl class="productDetailFacts" id="productDetailFacts"></dl>
-
-                    <!-- The cart is not built yet, so both actions land on
-                         the Coming Soon page the rest of the site uses. -->
-                    <div class="productDetailActions">
-
-                        <a
-                            href="../Error/comingSoon.html"
-                            class="productDetailBuyButton"
+                    <button
+                        class="productGalleryThumb active"
+                        type="button"
+                    >
+                        <img
+                            src="../../assets/images/Product/placeholder.png"
+                            alt="Product Image 1"
                         >
-                            Buy Now
-                        </a>
+                    </button>
 
-                        <a
-                            href="../Error/comingSoon.html"
-                            class="productDetailCartButton"
+                    <button
+                        class="productGalleryThumb"
+                        type="button"
+                    >
+                        <img
+                            src="../../assets/images/Product/placeholder.png"
+                            alt="Product Image 2"
                         >
-                            Add to Cart
-                        </a>
+                    </button>
 
-                    </div>
+                    <button
+                        class="productGalleryThumb"
+                        type="button"
+                    >
+                        <img
+                            src="../../assets/images/Product/placeholder.png"
+                            alt="Product Image 3"
+                        >
+                    </button>
 
-                    <!-- Seller -->
-                    <div class="productDetailSeller">
+                </div>
 
-                        <span class="productDetailSellerInitial" id="productDetailSellerInitial"></span>
-
-                        <div class="productDetailSellerText">
-
-                            <p class="productDetailSellerName" id="productDetailSellerName"></p>
-
-                            <p class="productDetailSellerLocation" id="productDetailSellerLocation"></p>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-            <!-- Description -->
-            <section class="productDescription" id="productDescription" hidden>
-
-                <h2 class="productDescriptionTitle">
-                    Description
-                </h2>
-
-                <p class="productDescriptionText" id="productDescriptionText"></p>
+                <!-- Main Product Image -->
+                <div class="productGalleryMain">
+                    <img
+                        src="../../assets/images/Product/placeholder.png"
+                        alt="Product Image"
+                    >
+                </div>
 
             </section>
+
+            <!-- Product Summary -->
+            <section class="productSummary">
+
+                <h2 class="productDetailName">
+                    DAKIMAKURA GAWR GURA HOLOLIVE Bantal Anime Waifu Gawr Gura Hololive
+                </h2>
+
+                <p class="productDetailSold">
+                    0 Terjual
+                </p>
+
+                <h1 class="productDetailPrice">
+                    Rp 0
+                </h1>
+
+                <!-- Product Purchase -->
+                <div class="productDetailPurchase">
+
+                    <!-- Quantity -->
+                    <div class="productQuantity">
+                        <button
+                            class="productQuantityButton"
+                            type="button"
+                        >
+                            -
+                        </button>
+
+                        <p class="productQuantityValue">
+                            1
+                        </p>
+
+                        <button
+                            class="productQuantityButton"
+                            type="button"
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    <!-- Total Price -->
+                    <div class="productTotalPrice">
+
+                        <p class="productTotalPriceLabel">
+                            Total Harga
+                        </p>
+
+                        <p class="productTotalPriceValue">
+                            Rp 0
+                        </p>
+
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="productDetailActions">
+
+                        <button
+                            class="productAddToCartButton"
+                            type="button"
+                        >
+                            Add to Cart
+                        </button>
+
+                        <button
+                            class="productBuyNowButton"
+                            type="button"
+                        >
+                            Buy it now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            </div>
 
         </main>
 
